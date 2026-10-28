@@ -1,0 +1,2 @@
+# Optional: subject cut-out so titles sit BEHIND the person (the reference look).
+rembg[cpu]>=2.0.50

@@ -1,0 +1,459 @@
+{
+ "version": 1,
+ "output": {
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "path": "renders/reel.mp4",
+  "crf": 16
+ },
+ "music": {
+  "path": "footage/song.mp3",
+  "start": 2.949,
+  "fade_out": 0.6
+ },
+ "duration": 24.0,
+ "protect": {
+  "hue": 0,
+  "width": 18,
+  "min_sat": 0.28,
+  "keep": 0.5
+ },
+ "grade": {
+  "enabled": true,
+  "correction": true,
+  "target_luma": 0.45,
+  "sections": [
+   {
+    "start": 0.0,
+    "look": "moody"
+   },
+   {
+    "start": 8.568,
+    "look": "airy"
+   },
+   {
+    "start": 19.272,
+    "look": "overcast"
+   }
+  ]
+ },
+ "pulse": {
+  "max_sigma": 14,
+  "pre": 0.3,
+  "post": 0.42,
+  "intro": true,
+  "breath_every_beats": 4,
+  "breath_strength": 0.45,
+  "min_shot_for_breath": 1.6
+ },
+ "beats": [
+  0.0,
+  0.418,
+  0.859,
+  1.277,
+  1.718,
+  2.136,
+  2.554,
+  2.995,
+  3.413,
+  3.854,
+  4.272,
+  4.714,
+  5.132,
+  5.573,
+  5.991,
+  6.409,
+  6.827,
+  7.314,
+  7.709,
+  8.15,
+  8.568,
+  9.009,
+  9.427,
+  9.868,
+  10.286,
+  10.728,
+  11.146,
+  11.587,
+  12.005,
+  12.423,
+  12.864,
+  13.282,
+  13.723,
+  14.141,
+  14.559,
+  15.0,
+  15.441,
+  15.859,
+  16.277,
+  16.695,
+  17.136,
+  17.577,
+  17.995,
+  18.437,
+  18.855,
+  19.272,
+  19.714,
+  20.132,
+  20.573,
+  20.991,
+  21.432,
+  21.873,
+  22.291,
+  22.732,
+  23.15,
+  23.568
+ ],
+ "events": [
+  {
+   "t": 8.568,
+   "type": "flash",
+   "dur": 0.14
+  },
+  {
+   "t": 9.127,
+   "type": "bleach",
+   "dur": 0.3
+  },
+  {
+   "t": 22.5,
+   "type": "flicker",
+   "dur": 0.7
+  },
+  {
+   "t": 23.2,
+   "type": "fade_grey",
+   "dur": 0.75
+  }
+ ],
+ "texture": {
+  "dust": [
+   [
+    7.314,
+    9.427
+   ]
+  ],
+  "dust_strength": 0.35,
+  "grain": 0.022
+ },
+ "shots": [
+  {
+   "id": "S01",
+   "clip": "footage/clip09_backarms.mp4",
+   "in": 0.25,
+   "dur": 0.859,
+   "speed": 0.937,
+   "ramp_out": 0.18,
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "color": "pulse",
+   "transition": "blur",
+   "note": "motion"
+  },
+  {
+   "id": "S02",
+   "clip": "footage/clip15_lowangle.mp4",
+   "in": 0.25,
+   "dur": 1.277,
+   "speed": 1.0,
+   "ramp_out": 0.18,
+   "zoom": [
+    1.04,
+    1.0
+   ],
+   "color": "bw_in",
+   "transition": "blend",
+   "note": "motion"
+  },
+  {
+   "id": "S03",
+   "clip": "footage/clip07_fabric.mp4",
+   "in": 0.25,
+   "dur": 1.277,
+   "speed": 0.822,
+   "ramp_out": 0.0,
+   "zoom": [
+    1.0,
+    1.4
+   ],
+   "color": "full",
+   "transition": "blur",
+   "note": "close"
+  },
+  {
+   "id": "S04",
+   "clip": "footage/clip12_frontarms.mp4",
+   "in": 0.25,
+   "dur": 2.16,
+   "speed": 0.579,
+   "ramp_out": 0.0,
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "color": "full",
+   "transition": "push_right",
+   "note": "hero"
+  },
+  {
+   "id": "S05",
+   "clip": "footage/clip04_river.mp4",
+   "in": 0.25,
+   "dur": 1.741,
+   "speed": 0.661,
+   "ramp_out": 0.0,
+   "zoom": [
+    1.0,
+    1.12
+   ],
+   "color": "full",
+   "transition": "blur",
+   "note": "broll"
+  },
+  {
+   "id": "S06",
+   "clip": "footage/clip14_fan.mp4",
+   "in": 0.0,
+   "dur": 1.254,
+   "speed": 0.797,
+   "ramp_out": 0.0,
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "color": "full",
+   "transition": "blur",
+   "note": "calm"
+  },
+  {
+   "id": "S07",
+   "clip": "footage/clip11_backup.mp4",
+   "in": 0.5,
+   "dur": 0.859,
+   "speed": 1.0,
+   "ramp_out": 0.0,
+   "zoom": [
+    1.05,
+    1.0
+   ],
+   "color": "bw_in",
+   "transition": "flash",
+   "note": "calm"
+  },
+  {
+   "id": "S08",
+   "clip": "footage/clip05_handpose.mp4",
+   "in": 0.25,
+   "dur": 1.301,
+   "speed": 0.814,
+   "ramp_out": 0.18,
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "color": "bw_in",
+   "transition": "bleach",
+   "note": "motion"
+  },
+  {
+   "id": "S09",
+   "clip": "footage/clip01_backturn.mp4",
+   "in": 0.25,
+   "dur": 1.277,
+   "speed": 0.564,
+   "ramp_out": 0.18,
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "color": "pop_flood",
+   "transition": "blur",
+   "note": "motion"
+  },
+  {
+   "id": "S10",
+   "clip": "footage/clip03_pose.mp4",
+   "in": 0.5,
+   "dur": 1.277,
+   "speed": 0.94,
+   "ramp_out": 0.0,
+   "zoom": [
+    1.0,
+    1.08
+   ],
+   "color": "full",
+   "transition": "blur",
+   "note": "close"
+  },
+  {
+   "id": "S11",
+   "clip": "footage/clip08_lookup.mp4",
+   "in": 0.25,
+   "dur": 0.441,
+   "speed": 1.0,
+   "ramp_out": 0.18,
+   "zoom": [
+    1.0,
+    1.0
+   ],
+   "color": "pop_out",
+   "transition": "blur",
+   "note": "motion"
+  },
+  {
+   "id": "S12",
+   "clip": "footage/clip06_twirl60.mp4",
+   "in": 0.25,
+   "dur": 0.836,
+   "speed": 0.5,
+   "ramp_out": 0.18,
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "color": "pop_flood",
+   "transition": "blur",
+   "note": "motion"
+  },
+  {
+   "id": "S13",
+   "clip": "footage/clip10_armsout.mp4",
+   "in": 0.5,
+   "dur": 1.3,
+   "speed": 0.669,
+   "ramp_out": 0.0,
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "color": "full",
+   "transition": "blur",
+   "note": "calm"
+  },
+  {
+   "id": "S14",
+   "clip": "footage/clip02_face.mp4",
+   "in": 0.25,
+   "dur": 1.277,
+   "speed": 0.697,
+   "ramp_out": 0.18,
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "color": "full",
+   "transition": "blur",
+   "note": "motion"
+  },
+  {
+   "id": "S15",
+   "clip": "footage/clip15_lowangle.mp4",
+   "in": 1.25,
+   "dur": 0.859,
+   "speed": 0.937,
+   "ramp_out": 0.18,
+   "zoom": [
+    1.0,
+    1.04
+   ],
+   "color": "full",
+   "transition": "blur",
+   "note": "motion"
+  },
+  {
+   "id": "S16",
+   "clip": "footage/clip15_lowangle.mp4",
+   "in": 0.0,
+   "dur": 1.277,
+   "speed": 1.0,
+   "ramp_out": 0.18,
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "color": "full",
+   "transition": "blur",
+   "note": "motion"
+  },
+  {
+   "id": "S17",
+   "clip": "footage/clip13_spin_wide169.mp4",
+   "in": 0.0,
+   "dur": 0.86,
+   "speed": 0.788,
+   "ramp_out": 0.18,
+   "zoom": [
+    1.0,
+    1.04
+   ],
+   "color": "full",
+   "transition": "push_left",
+   "note": "motion"
+  },
+  {
+   "id": "S18",
+   "clip": "footage/clip15_lowangle.mp4",
+   "in": 0.0,
+   "dur": 0.859,
+   "speed": 1.0,
+   "ramp_out": 0.18,
+   "zoom": [
+    1.0,
+    1.04
+   ],
+   "color": "bw_hold",
+   "transition": "blur",
+   "note": "motion"
+  },
+  {
+   "id": "S19",
+   "clip": "footage/clip15_lowangle.mp4",
+   "in": 0.0,
+   "dur": 1.3,
+   "speed": 1.0,
+   "ramp_out": 0.18,
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "color": "full",
+   "transition": "blur",
+   "note": "motion"
+  },
+  {
+   "id": "S20",
+   "clip": "footage/clip15_lowangle.mp4",
+   "in": 0.0,
+   "dur": 1.709,
+   "speed": 1.0,
+   "ramp_out": 0.0,
+   "zoom": [
+    1.0,
+    1.08
+   ],
+   "color": "full",
+   "transition": "blur",
+   "note": "calm"
+  }
+ ],
+ "titles": [
+  {
+   "text": "Baby",
+   "start": 3.513,
+   "end": 5.533,
+   "font": "GreatVibes-Regular.ttf",
+   "size": 230,
+   "color": "#E22424",
+   "color_in": "#FF7A1A",
+   "pos": [
+    0.5,
+    0.2
+   ],
+   "behind_subject": true,
+   "anim": "blur_rise"
+  }
+ ]
+}

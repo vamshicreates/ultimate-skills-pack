@@ -1,0 +1,9 @@
+# pulse-reel-edit — core (macOS / Windows / Linux, Python 3.10+)
+numpy>=1.24
+opencv-python>=4.8
+pillow>=10.0
+librosa>=0.10
+soundfile>=0.12
+scipy>=1.10
+matplotlib>=3.7
+imageio-ffmpeg>=0.4.9   # ships a static ffmpeg for every OS

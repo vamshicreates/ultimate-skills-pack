@@ -1,0 +1,4 @@
+interface:
+  display_name: "Pulse Reel Edit"
+  short_description: "Beat-synced focus-pulse + colour-pop reel editor (FFmpeg, FilmCraft MCP, DaVinci LUTs)"
+  default_prompt: "Use $pulse-reel-edit to edit the footage in ./footage with ./song.mp3 into a 30 second reel, title 'Baby'."
