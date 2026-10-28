@@ -1,0 +1,4 @@
+interface:
+  display_name: "Code Visuals for Music"
+  short_description: "Music visuals with Python and Chitram motion tools"
+  default_prompt: "Use $code-visuals-for-music to turn my song and visual references into an audio-synced motion proof, then build the authorized video from the validated treatment."

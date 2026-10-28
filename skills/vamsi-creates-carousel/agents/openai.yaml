@@ -1,0 +1,5 @@
+interface:
+  display_name: "Vamsi Creates Carousel Skill"
+  short_description: "Create clear, editable carousels in Vamsi Creates style"
+  brand_color: "#3B82F6"
+  default_prompt: "Use $vamsi-creates-carousel to turn this information into an editable Canva carousel."

@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="te">
+<head>
+<meta charset="UTF-8" />
+<title>Lyric-diagram music video — template</title>
+<link rel="stylesheet" href="engine/fonts.css" />
+<link rel="stylesheet" href="engine/kit.css" />
+<script src="engine/vendor/gsap.min.js"></script>
+<style>
+@font-face{font-family:"Anek Telugu";src:url(assets/fonts/AnekTelugu-VF.ttf) format("truetype");font-weight:100 800;font-stretch:75% 125%;font-display:block}
+@font-face{font-family:"IPA Mono";src:url(assets/fonts/DejaVuSansMono.ttf) format("truetype");font-display:block}
+#film{background:#0a0a0b;overflow:hidden}
+#cv,#bloom{position:absolute;left:0;top:0;width:1920px;height:1080px}
+#bloom{filter:blur(18px) brightness(1.25);mix-blend-mode:screen;opacity:.55}
+.warm{position:absolute;left:-9999px;top:0;font-size:40px}
+</style>
+</head>
+<body>
+<div id="film" data-film data-duration="69" data-fps="30" data-width="1920" data-height="1080" data-audio="assets/song.wav">
+  <canvas id="cv" width="1920" height="1080"></canvas>
+  <canvas id="bloom" width="960" height="540"></canvas>
+  <span class="warm" style="font-family:'Anek Telugu';font-weight:600">పాట క్షణం హరివిల్లు</span>
+  <span class="warm" style="font-family:'Anek Telugu';font-weight:300">తలకట్టు దూరం</span>
+  <span class="warm" style="font-family:'JetBrains Mono';font-weight:400">MONO 0123</span>
+  <span class="warm" style="font-family:'JetBrains Mono';font-weight:700">MONO 0123</span>
+  <span class="warm" style="font-family:'IPA Mono'">/paːʈapeːɾu/ ː ʈ ɾ</span>
+  <div id="fx" class="layer"></div>
+</div>
+
+<script src="engine/runtime.js"></script>
+<script src="engine/motion-kit.js"></script>
+<script src="engine/fx-kit.js"></script>
+<script src="assets/beats.js"></script>
+<script src="assets/env.js"></script>
+<script src="assets/lyrics.js"></script>
+<script>
+/* =====================================================================================
+   LYRIC-DIAGRAM MUSIC VIDEO — one canvas, one pure function: renderFrame(t).
+   Edit SONG (below) for each song: title, artist, title syllables, title consonants, hook time.
+   Style DNA (from the "Hindi consonants" prompt): near-black #0a0a0b, ONE orange accent #ff5a1f,
+   cream #ede6da paper-form scenes with a red stamp, thin HUD corners, tiny mono labels + IPA readouts,
+   Anek (Telugu) + JetBrains Mono, light bloom, film grain, science-diagram objects, scenes cut on beats.
+   ===================================================================================== */
+const W = 1920, H = 1080;
+const ACCENT = "#ff5a1f";   // ← the ONE accent colour: always ask the user before building (default orange)
+const C = { bg: "#0a0a0b", or: ACCENT, cr: "#ede6da", ink: "#17140f", red: "#c62f25" };
+const M = window.MUSIC, EV = window.ENV, LY = window.LYRICS;
+/* ---------- per-song settings (edit these) ---------- */
+const SONG = {
+  title: "SONG TITLE", artist: "ARTIST",
+  titleText: "పాటపేరు",                                  // the title in its own script (shown in labels/tags)
+  syllables: [["పా", "PAA", "/paː/"], ["ట", "TA", "/ʈa/"], ["పే", "PE", "/peː/"], ["రు", "RU", "/ɾu/"]], // title, one entry per syllable
+  syllableTimes: [8.139, 9.776, 11.447, 13.305],          // scene 02: when each syllable appears (on downbeats)
+  sungTimes: [66.64, 67.0, 67.36, 67.72],                 // finale: when each syllable is SUNG (from word timestamps)
+  titleIPA: "/paːʈapeːɾu/", consonants: "p · ʈ · p · ɾ",
+};
+const BEAT = 60 / M.bpm;
+const TE = "'Anek Telugu'", MONO = "'JetBrains Mono','IPA Mono','Anek Telugu'", IPA = "'IPA Mono'";
+
+/* ---------- math ---------- */
+const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, u) => a + (b - a) * u;
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const eo = (u) => 1 - Math.pow(1 - clamp(u), 3);           // ease out cubic
+const eo5 = (u) => 1 - Math.pow(1 - clamp(u), 5);
+const eio = (u) => { u = clamp(u); return u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2; };
+const back = (u) => { u = clamp(u); const c = 1.9; return 1 + (c + 1) * Math.pow(u - 1, 3) + c * Math.pow(u - 1, 2); };
+const hash = (n) => { const x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+const env = (k, t) => { const a = EV[k], f = t * EV.fps, i = Math.floor(f), u = f - i;
+  const v0 = a[clamp(i, 0, a.length - 1)], v1 = a[clamp(i + 1, 0, a.length - 1)]; return v0 + (v1 - v0) * u; };
+const osc = (t) => EV.osc[clamp(Math.floor(t * EV.fps), 0, EV.osc.length - 1)] || [];
+const beatIdx = (t) => { let i = 0; while (i < M.beats.length - 1 && M.beats[i + 1] <= t) i++; return i; };
+const sinceBeat = (t) => { const i = beatIdx(t); return t - M.beats[i]; };
+const lastOf = (arr, t) => { let r = -1e9; for (const v of arr) { if (v <= t) r = v; else break; } return r; };
+const fmt = (t) => { const m = Math.floor(t / 60), s = t - m * 60; return String(m).padStart(2, "0") + ":" + s.toFixed(2).padStart(5, "0"); };
+
+/* ---------- drawing ---------- */
+let g;
+function rgba(hex, a) { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16},${(n >> 8) & 255},${n & 255},${a})`; }
+function text(s, x, y, o = {}) {
+  g.save();
+  g.font = `${o.w || 400} ${o.size || 16}px ${o.f || MONO}`;
+  g.textAlign = o.align || "left"; g.textBaseline = o.base || "alphabetic";
+  g.letterSpacing = (o.ls || 0) + "px";
+  g.globalAlpha = o.a ?? 1;
+  if (o.glow) { g.shadowColor = o.glow; g.shadowBlur = o.blur || 30; }
+  if (o.stroke) { g.strokeStyle = o.stroke; g.lineWidth = o.lw || 2; if (o.dash) { g.setLineDash(o.dash); g.lineDashOffset = o.dashOff || 0; } g.strokeText(s, x, y); }
+  if (o.color !== null) { g.fillStyle = o.color || C.cr; g.fillText(s, x, y); }
+  g.restore();
+}
+function measure(s, size, w = 400, f = MONO, ls = 0) { g.save(); g.font = `${w} ${size}px ${f}`; g.letterSpacing = ls + "px"; const m = g.measureText(s).width; g.restore(); return m; }
+function line(x1, y1, x2, y2, col, lw = 1.5, a = 1, dash) {
+  g.save(); g.globalAlpha = a; g.strokeStyle = col; g.lineWidth = lw; if (dash) g.setLineDash(dash);
+  g.beginPath(); g.moveTo(x1, y1); g.lineTo(x2, y2); g.stroke(); g.restore();
+}
+function circle(x, y, r, o = {}) {
+  g.save(); g.globalAlpha = o.a ?? 1; g.beginPath(); g.arc(x, y, r, o.a0 ?? 0, o.a1 ?? Math.PI * 2);
+  if (o.fill) { if (o.glow) { g.shadowColor = o.glow; g.shadowBlur = o.blur || 20; } g.fillStyle = o.fill; g.fill(); }
+  if (o.stroke) { g.strokeStyle = o.stroke; g.lineWidth = o.lw || 1.5; if (o.dash) g.setLineDash(o.dash); g.stroke(); }
+  g.restore();
+}
+function arrow(x1, y1, x2, y2, col, lw = 1.5, a = 1, head = 10) {
+  line(x1, y1, x2, y2, col, lw, a);
+  const ang = Math.atan2(y2 - y1, x2 - x1);
+  g.save(); g.globalAlpha = a; g.fillStyle = col; g.beginPath(); g.moveTo(x2, y2);
+  g.lineTo(x2 - head * Math.cos(ang - .4), y2 - head * Math.sin(ang - .4)); g.lineTo(x2 - head * Math.cos(ang + .4), y2 - head * Math.sin(ang + .4)); g.closePath(); g.fill(); g.restore();
+}
+// big glowing Telugu word (cream core + orange bloom), with a stroke "draw-on" before the fill
+function bigWord(s, x, y, size, t0, t, o = {}) {
+  const k = prog(t, t0, t0 + (o.dur ?? 1.1)); if (k <= 0) return;
+  const ink = o.ink || C.cr, glow = o.glow ?? rgba(C.or, .85);
+  const len = 4200;
+  text(s, x, y, { f: TE, w: o.w || 600, size, align: o.align || "left", color: null, stroke: o.strokeCol || rgba(C.or, .95), lw: o.lwStroke || 2.2,
+    dash: [len, len], dashOff: len * (1 - eo(k * 1.4)), a: o.a ?? 1, ls: o.ls || 0 });
+  const f = eo(prog(t, t0 + (o.dur ?? 1.1) * .45, t0 + (o.dur ?? 1.1)));
+  if (f > 0) text(s, x, y, { f: TE, w: o.w || 600, size, align: o.align || "left", color: ink, glow: o.noGlow ? null : glow, blur: o.blur || 44, a: f * (o.a ?? 1), ls: o.ls || 0 });
+}
+function label(s, x, y, o = {}) { text(s, x, y, { size: o.size || 15, ls: o.ls ?? 2.4, color: o.color || rgba(C.cr, .62), w: o.w || 400, align: o.align, a: o.a }); }
+function ipa(s, x, y, o = {}) { text(s, x, y, { f: IPA, size: o.size || 22, ls: 1, color: o.color || C.or, align: o.align, a: o.a }); }
+function typed(s, t, t0, cps = 38) { const n = Math.floor(clamp((t - t0) * cps, 0, s.length)); return s.slice(0, n); }
+
+/* ---------- the HUD (every scene) ---------- */
+function hud(t, sc, ink) {
+  const col = ink ? rgba(C.ink, .7) : rgba(C.cr, .55), m = 46, L = 30, k = eo(prog(t, .3, 1.6));
+  [[m, m, 1, 1], [W - m, m, -1, 1], [m, H - m, 1, -1], [W - m, H - m, -1, -1]].forEach(([x, y, sx, sy]) => {
+    line(x, y, x + sx * L * k, y, col, 1.5); line(x, y, x, y + sy * L * k, col, 1.5);
+  });
+  if (k < .5) return;
+  const bi = beatIdx(t), bar = Math.floor((bi - 2) / 4) + 1, beat = ((bi - 2) % 4 + 4) % 4 + 1;
+  const lc = ink ? rgba(C.ink, .75) : rgba(C.cr, .55);
+  label(`${SONG.title} — ${SONG.artist}`.toUpperCase(), m + 44, m + 6, { color: lc, size: 14 });
+  label(`BPM 143.7   BAR ${String(Math.max(0, bar)).padStart(3, "0")}   BEAT ${beat}`, W - m - 44, m + 6, { color: lc, size: 14, align: "right" });
+  label(`SCN ${String(sc.n).padStart(2, "0")}/10 — ${sc.tag}`, m + 44, H - m + 4, { color: lc, size: 14 });
+  label(`T ${fmt(t)}`, W - m - 44, H - m + 4, { color: lc, size: 14, align: "right" });
+  // beat tick: a tiny orange square flashes on every beat
+  const sb = sinceBeat(t); g.save(); g.globalAlpha = clamp(1 - sb / .18) * .9 + .1; g.fillStyle = C.or; g.fillRect(W - m - 30, m - 6, 8, 8); g.restore();
+}
+
+/* ---------- lyric caption (draft transcription; only conf h/m) ---------- */
+function lyric(t, ink) {
+  for (const l of LY) {
+    if (l.conf === "l" || l.te === SONG.titleText) continue;
+    if (t < l.s - .05 || t > l.e + .25) continue;
+    const kin = eo(prog(t, l.s - .05, l.s + .35)), kout = 1 - prog(t, l.e, l.e + .22);
+    const a = kin * kout, x = 140, y = 918;
+    g.save(); g.globalAlpha = a; g.fillStyle = C.or; g.fillRect(x - 26, y - 40, 4, 66); g.restore();
+    // reveal the line left→right with a clip
+    g.save(); g.beginPath(); g.rect(x - 4, y - 70, 40 + 1400 * kin, 140); g.clip();
+    text(l.te, x, y, { f: TE, w: 500, size: 50, color: ink ? C.ink : C.cr, a });
+    g.restore();
+    label(`${l.ro.toUpperCase()}   —   ${l.en.toUpperCase()}`, x, y + 36, { a: a * .9, color: ink ? rgba(C.ink, .7) : rgba(C.cr, .6), size: 14 });
+    label(`LYRIC ${fmt(l.s)}`, x, y - 62, { a: a * .9, color: C.or, size: 13 });
+  }
+}
+
+/* ---------- red stamp ---------- */
+function stamp(x, y, t0, t, lines, o = {}) {
+  const k = prog(t, t0 - .08, t0 + .12); if (t < t0 - .08) return;
+  const s = lerp(1.9, 1, eo5(k)), rot = (o.rot ?? -9) * Math.PI / 180;
+  g.save(); g.translate(x, y); g.rotate(rot); g.scale(s, s); g.globalAlpha = clamp(k * 1.6) * .92;
+  const w = o.w || 360, h = o.h || 150;
+  g.strokeStyle = C.red; g.lineWidth = 6; g.strokeRect(-w / 2, -h / 2, w, h); g.lineWidth = 2; g.strokeRect(-w / 2 + 10, -h / 2 + 10, w - 20, h - 20);
+  g.fillStyle = C.red; g.textAlign = "center";
+  g.font = `700 ${o.big || 64}px ${TE}`; g.fillText(lines[0], 0, 14);
+  g.font = `700 16px ${MONO}`; g.letterSpacing = "5px"; g.fillText(lines[1], 0, h / 2 - 22);
+  // ink wear: knock out deterministic specks (paper shows through)
+  g.globalCompositeOperation = "destination-out";
+  for (let i = 0; i < 220; i++) { const px = (hash(i * 3.7) - .5) * w, py = (hash(i * 9.1) - .5) * h; g.beginPath(); g.arc(px, py, .6 + hash(i) * 2.6, 0, 7); g.fill(); }
+  g.restore();
+}
+
+/* ---------- paper (cream form) ---------- */
+function paper(t, t0, title, no) {
+  g.fillStyle = C.cr; g.fillRect(0, 0, W, H);
+  // fibre noise + light form grid
+  g.save(); g.globalAlpha = .06; g.fillStyle = C.ink;
+  for (let i = 0; i < 900; i++) g.fillRect(hash(i * 1.3) * W, hash(i * 2.9) * H, 1 + hash(i) * 2, 1);
+  g.restore();
+  for (let x = 120; x < W - 100; x += 60) line(x, 150, x, H - 150, rgba(C.ink, .06), 1);
+  for (let y = 150; y < H - 140; y += 60) line(120, y, W - 120, y, rgba(C.ink, .06), 1);
+  // header strip
+  line(120, 150, W - 120, 150, C.ink, 2); line(120, 156, W - 120, 156, C.ink, .8);
+  label(`FORM ${no}`, 120, 132, { color: C.ink, size: 16, w: 700, ls: 4 });
+  label(title, 330, 132, { color: rgba(C.ink, .8), size: 16, ls: 3 });
+  label("SPECIMEN · SONG-TIME " + fmt(t0), W - 120, 132, { color: rgba(C.ink, .7), size: 14, align: "right" });
+  line(120, H - 150, W - 120, H - 150, C.ink, 1.2);
+}
+
+/* =====================================================================================
+   SCENES (start on phrase downbeats: 1.46 / 8.14 / 14.99 / 21.64 / 28.31 / 34.98 / 41.62 / 48.32 / 54.97 / 61.65)
+   ===================================================================================== */
+const SC = [
+  { a: 0, b: 8.139, n: 1, tag: "తలకట్టు", fn: s1 },
+  { a: 8.139, b: 14.988, n: 2, tag: SONG.titleText, fn: s2 },
+  { a: 14.988, b: 21.641, n: 3, tag: "వర్ణమాల", fn: s3 },
+  { a: 21.641, b: 28.305, n: 4, tag: "దూరం", fn: s4, paper: true },
+  { a: 28.305, b: 34.981, n: 5, tag: "పాదం", fn: s5 },
+  { a: 34.981, b: 41.622, n: 6, tag: "క్షణం", fn: s6 },
+  { a: 41.622, b: 48.321, n: 7, tag: "హరివిల్లు", fn: s7, paper: true },
+  { a: 48.321, b: 54.973, n: 8, tag: "దూరమంతా", fn: s8 },
+  { a: 54.973, b: 61.649, n: 9, tag: "నువ్వే", fn: s9 },
+  { a: 61.649, b: 69.01, n: 10, tag: SONG.titleText, fn: s10 },
+];
+
+/* 01 · the headstroke — one orange line, alive with her spoken voice */
+function s1(t) {
+  const y = 470, x0 = 300, x1 = 1620, k = eio(prog(t, 1.0, 4.2));
+  const v = env("voc", t), wave = osc(t);
+  // ruler under the line
+  for (let i = 0; i <= 22; i++) { const x = lerp(x0, x1, i / 22), a = clamp(k * 22 - i);
+    line(x, y + 60, x, y + (i % 2 ? 70 : 80), rgba(C.cr, .35), 1, a);
+    if (i % 2 === 0) label(String(i * 5).padStart(3, "0"), x, y + 102, { size: 11, align: "center", a: a * .6 }); }
+  // the line: straight, carrying the voice as a travelling oscilloscope ripple
+  g.save(); g.beginPath();
+  const xe = lerp(x0, x1, k);
+  for (let x = x0; x <= xe; x += 6) {
+    const u = (x - x0) / (x1 - x0), wi = Math.floor(u * (wave.length - 1));
+    const env2 = Math.sin(Math.PI * clamp(u)) ** .6;
+    const w0 = wave[Math.max(0, wi - 2)] || 0, w1 = wave[wi] || 0, w2 = wave[Math.min(wave.length - 1, wi + 2)] || 0;
+    const yy = y + ((w0 + 2 * w1 + w2) / 4) * 520 * env2 * (0.25 + v) + Math.sin(u * 30 - t * 4) * 6 * v * env2;
+    x === x0 ? g.moveTo(x, yy) : g.lineTo(x, yy);
+  }
+  g.strokeStyle = C.or; g.lineWidth = 3; g.shadowColor = C.or; g.shadowBlur = 24; g.stroke(); g.restore();
+  circle(xe, y, 5, { fill: C.cr, glow: C.or, blur: 30, a: k > 0 && k < 1 ? 1 : 0 });
+  label(typed("01 / తలకట్టు — THE HEADSTROKE", t, 2.0), x0, y - 120, { size: 16, color: rgba(C.cr, .8), ls: 3 });
+  label(typed("EVERY LETTER HANGS FROM ONE LINE.", t, 2.8), x0, y - 92, { size: 13, a: .55 });
+  // live readout
+  const a = prog(t, 3.0, 3.6);
+  label(`SIGNAL  VOICE · SPOKEN`, x1, y - 120, { align: "right", size: 13, a });
+  label(`RMS ${v.toFixed(3)}   GAIN ×${(0.3 + v).toFixed(2)}`, x1, y - 96, { align: "right", size: 13, a, color: C.or });
+  ipa("/t̪alakaʈːu/", x1, y + 150, { align: "right", size: 20, a: prog(t, 4.2, 5.0) });
+  // 7.28 – 8.14: the ripple settles
+}
+
+/* 02 · the name hangs from the line */
+function s2(t, sc) {
+  const lt = t - sc.a, y = lerp(470, 360, eo(prog(lt, 0, .7)));
+  line(300, y, 1620, y, C.or, 3, 1);
+  g.save(); g.shadowColor = C.or; g.shadowBlur = 24; line(300, y, 1620, y, C.or, 3, .6); g.restore();
+  const syl = SONG.syllables;
+  const size = 250, gap = 34, ws = syl.map((s) => measure(s[0], size, 600, TE)), tot = ws.reduce((a, b) => a + b, 0) + gap * 3;
+  let x = W / 2 - tot / 2; const base = 650;
+  const at = SONG.syllableTimes;
+  const pick = 1 + .06 * Math.exp(-Math.pow((t - 14.6) / .12, 2));
+  syl.forEach(([s, r, ip], i) => {
+    const t0 = at[i], cx = x + ws[i] / 2;
+    const hk = eo(prog(t, t0, t0 + .35));
+    line(cx, y, cx, lerp(y, base - size * .78, hk), rgba(C.cr, .5), 1, 1);           // hanger thread
+    label(r, cx, y - 22, { align: "center", size: 14, a: hk, color: C.cr });
+    g.save(); g.translate(cx, base); g.scale(pick, pick); g.translate(-cx, -base);
+    bigWord(s, x, base, size, t0 + .05, t, { dur: .9 });
+    g.restore();
+    ipa(ip, cx, base + 80, { align: "center", size: 22, a: prog(t, t0 + .5, t0 + .9) });
+    x += ws[i] + gap;
+  });
+  const a = prog(t, 13.4, 13.9);
+  label(`02 / ${SONG.titleText} — THE TITLE · ${SONG.syllables.length} SYLLABLES`, 300, y - 70, { size: 15, a: prog(lt, .3, .8), color: rgba(C.cr, .8) });
+  ipa(SONG.titleIPA, W / 2, 840, { align: "center", size: 28, a });
+  label(SONG.consonants, W / 2, 880, { align: "center", size: 13, a: a * .7 });
+}
+
+/* 03 · the chart: Telugu consonants by place of articulation × voicing */
+const PLACES = [["కంఠ్యం", "VELAR"], ["తాలవ్యం", "PALATAL"], ["మూర్ధన్యం", "RETROFLEX"], ["దంత్యం", "DENTAL"], ["ఓష్ఠ్యం", "LABIAL"]];
+const ROWS = [["VOICELESS", "ఖరం"], ["VOICELESS · ASP.", "ఖరం · మహా"], ["VOICED", "మృదువు"], ["VOICED · ASP.", "మృదు · మహా"], ["NASAL", "అనునాసికం"]];
+const GRID = [["క", "ఖ", "గ", "ఘ", "ఙ"], ["చ", "ఛ", "జ", "ఝ", "ఞ"], ["ట", "ఠ", "డ", "ఢ", "ణ"], ["త", "థ", "ద", "ధ", "న"], ["ప", "ఫ", "బ", "భ", "మ"]];
+const EXTRA = [["య", "j"], ["ర", "ɾ"], ["ల", "l"], ["వ", "ʋ"], ["శ", "ɕ"], ["ష", "ʂ"], ["స", "s"], ["హ", "ɦ"]];
+const HL = [ // the title's consonants light up on the band's hits — set col/row (or extra index) per sound
+  { t: 16.85, col: 4, row: 0, ch: "ప", d: "p · LABIAL · VOICELESS", place: 4 },
+  { t: 18.52, col: 2, row: 0, ch: "ట", d: "ʈ · RETROFLEX · VOICELESS", place: 2 },
+  { t: 20.20, extra: 1, ch: "ర", d: "ɾ · TAP", place: 2 },
+];
+function s3(t, sc) {
+  const lt = t - sc.a, gx = 170, gy = 300, cw = 196, ch = 104, lw = 250;
+  label("03 / వర్ణమాల — CONSONANTS BY PLACE OF ARTICULATION × VOICING", gx, 190, { size: 16, color: rgba(C.cr, .85), a: prog(lt, 0, .3) });
+  label("కంఠ్యం → ఊష్మ   ·   BACK OF THE MOUTH → FRONT → BREATH", gx, 220, { size: 13, a: prog(lt, .2, .5) });
+  const k = eo(prog(lt, 0, .8));
+  // grid lines draw in
+  for (let c = 0; c <= 5; c++) line(gx + lw + c * cw, gy, gx + lw + c * cw, gy + lerp(0, ch * 5, k), rgba(C.cr, .22), 1);
+  for (let r = 0; r <= 5; r++) line(gx, gy + r * ch, gx + lerp(0, lw + cw * 5, k), gy + r * ch, rgba(C.cr, .22), 1);
+  PLACES.forEach(([te, en], c) => {
+    const a = prog(lt, .2 + c * .06, .5 + c * .06);
+    text(te, gx + lw + c * cw + 14, gy - 40, { f: TE, size: 30, w: 500, a, color: C.cr });
+    label(en, gx + lw + c * cw + 14, gy - 14, { size: 12, a });
+  });
+  ROWS.forEach(([en, te], r) => {
+    const a = prog(lt, .3 + r * .06, .6 + r * .06);
+    label(en, gx + 6, gy + r * ch + 46, { size: 12, a });
+    text(te, gx + 6, gy + r * ch + 80, { f: TE, size: 22, w: 400, a: a * .7, color: C.cr });
+  });
+  const lit = HL.filter((h) => t >= h.t);
+  GRID.forEach((col, c) => col.forEach((chr, r) => {
+    const a = prog(lt, .35 + (c + r) * .04, .7 + (c + r) * .04);
+    const on = lit.find((h) => h.col === c && h.row === r);
+    const x = gx + lw + c * cw + cw / 2, y = gy + r * ch + 74;
+    if (on) { const p = eo(prog(t, on.t, on.t + .25));
+      g.save(); g.strokeStyle = C.or; g.lineWidth = 2; g.shadowColor = C.or; g.shadowBlur = 22; g.strokeRect(gx + lw + c * cw + 4, gy + r * ch + 4, cw - 8, ch - 8); g.restore();
+      g.save(); g.globalAlpha = .14 * p; g.fillStyle = C.or; g.fillRect(gx + lw + c * cw, gy + r * ch, cw, ch); g.restore(); }
+    text(chr, x, y, { f: TE, size: on ? 66 : 58, w: on ? 700 : 400, align: "center", a: on ? 1 : a * .62, color: on ? C.or : C.cr, glow: on ? C.or : null, blur: 26 });
+  }));
+  // approximants + sibilants (అంతస్థాలు · ఊష్మాలు)
+  const ey = gy + ch * 5 + 64;
+  label("అంతస్థాలు · APPROXIMANTS", gx + 6, ey - 4, { size: 12, a: prog(lt, .7, 1) });
+  label("ఊష్మాలు · SIBILANTS + BREATH", gx + lw + cw * 2.5, ey - 4, { size: 12, a: prog(lt, .7, 1) });
+  EXTRA.forEach(([chr, ip], i) => {
+    const on = lit.find((h) => h.extra === i), x = gx + lw + i * (cw * 5 / 8) + 60 - (i < 4 ? 0 : 0), y = ey + 66;
+    if (on) circle(x, y - 20, 46, { stroke: C.or, lw: 2, glow: C.or });
+    text(chr, x, y, { f: TE, size: on ? 62 : 52, w: on ? 700 : 400, align: "center", color: on ? C.or : C.cr, a: on ? 1 : prog(lt, .8 + i * .03, 1.1 + i * .03) * .6, glow: on ? C.or : null });
+    ipa("/" + ip + "/", x, y + 34, { align: "center", size: 14, a: prog(lt, 1, 1.3) * .6, color: C.cr });
+  });
+  // vocal-tract schematic: the place of the latest lit sound
+  const vx = 1590, vy = 430, VS = .78;
+  const pa = prog(lt, .5, 1.2);
+  g.save(); g.translate(vx, vy); g.scale(VS, VS); g.translate(-vx, -vy); g.globalAlpha = pa; g.strokeStyle = rgba(C.cr, .55); g.lineWidth = 1.5;
+  g.beginPath(); g.moveTo(vx - 160, vy + 40); g.bezierCurveTo(vx - 150, vy - 120, vx + 80, vy - 170, vx + 170, vy - 60);   // palate
+  g.moveTo(vx + 170, vy - 60); g.lineTo(vx + 190, vy - 20);                                                           // upper teeth
+  g.moveTo(vx + 196, vy - 30); g.quadraticCurveTo(vx + 236, vy - 10, vx + 206, vy + 6);                               // upper lip
+  g.moveTo(vx + 206, vy + 40); g.quadraticCurveTo(vx + 236, vy + 56, vx + 196, vy + 74);                              // lower lip
+  g.moveTo(vx - 130, vy + 160); g.bezierCurveTo(vx - 120, vy + 20, vx + 60, vy - 20, vx + 160, vy + 50);             // tongue
+  g.stroke(); g.restore();
+  const pts = [[-120, -60, "VELUM"], [-10, -128, "PALATE"], [90, -120, "RIDGE"], [176, -42, "TEETH"], [222, 22, "LIPS"]].map(([x, y, n]) => [vx + x * VS, vy + y * VS, n]);
+  pts.forEach(([x, y, n], i) => { circle(x, y, 4, { fill: rgba(C.cr, .6), a: pa }); label(n, x, y - 14, { size: 11, align: "center", a: pa * .7 }); label(PLACES[i][1], vx - 160, vy + 220 + i * 0, { a: 0 }); });
+  const cur = lit[lit.length - 1];
+  if (cur) { const [x, y] = pts[cur.place], p = eo5(prog(t, cur.t, cur.t + .3));
+    circle(x, y, lerp(40, 10, p), { stroke: C.or, lw: 2, a: 1 - p * .3 }); circle(x, y, 7, { fill: C.or, glow: C.or, blur: 30 });
+    text(cur.ch, vx + 30, vy + 300, { f: TE, size: 110, w: 700, align: "center", color: C.cr, glow: C.or, blur: 40 });
+    label(cur.d, vx + 30, vy + 350, { align: "center", size: 14, color: C.or }); }
+  label("PLACE OF ARTICULATION", vx + 30, vy - 190, { align: "center", size: 12, a: pa });
+}
+
+/* 04 · cream form — distance between two points */
+function s4(t, sc) {
+  const lt = t - sc.a; const slam = 1 + .025 * (1 - eo(prog(lt, 0, .3)));
+  g.save(); g.translate(W / 2, H / 2); g.scale(slam, slam); g.translate(-W / 2, -H / 2);
+  paper(t, sc.a, "దూరం · DISTANCE BETWEEN TWO POINTS", "04");
+  const ax = 300, bx = 1240, y = 640, k = eio(prog(lt, .4, 2.4));
+  // fields
+  [["SUBJECT", "అతడు · HIM"], ["OBJECT", "ఆమె · HER"], ["MEASURE", "d(A, B)"]].forEach(([f, v], i) => {
+    const yy = 230 + i * 62, a = prog(lt, .2 + i * .15, .5 + i * .15);
+    label(f, 120, yy, { color: rgba(C.ink, .6), size: 13, a }); line(260, yy + 8, 760, yy + 8, rgba(C.ink, .4), 1, a);
+    text(typed(v, t, sc.a + .3 + i * .2, 30), 270, yy, { f: TE, size: 30, w: 500, color: C.ink, a });
+  });
+  // the route between A and B: the musical line, drawn in ink
+  g.save(); g.beginPath();
+  for (let x = ax; x <= lerp(ax, bx, k); x += 4) { const u = (x - ax) / (bx - ax); const yy = y - 90 * Math.sin(u * Math.PI) - 26 * Math.sin(u * 22 - lt * 3) * Math.sin(u * Math.PI);
+    x === ax ? g.moveTo(x, yy) : g.lineTo(x, yy); }
+  g.strokeStyle = C.ink; g.lineWidth = 2; g.setLineDash([10, 8]); g.stroke(); g.restore();
+  circle(ax, y, 12, { fill: C.ink }); label("A · అతడు", ax, y + 46, { color: C.ink, size: 14, align: "center" });
+  circle(bx, y, 12, { fill: C.or, a: prog(lt, 1.5, 1.8) }); circle(bx, y, 26 + 8 * Math.sin(lt * 6), { stroke: C.or, lw: 2, a: prog(lt, 1.5, 1.8) });
+  label("B · ఆమె", bx, y + 46, { color: C.ink, size: 14, align: "center", a: prog(lt, 1.5, 1.8) });
+  // dimension line
+  const dk = eio(prog(lt, 2.0, 3.2)); const dy = y + 120;
+  line(ax, y + 30, ax, dy + 16, rgba(C.ink, .5), 1, dk); line(bx, y + 30, bx, dy + 16, rgba(C.ink, .5), 1, dk);
+  if (dk > 0) { arrow(W / 2 - 100, dy, lerp(W / 2 - 100, ax, dk), dy, C.ink, 1.5, 1, 12); arrow(W / 2 - 100, dy, lerp(W / 2 - 100, bx, dk), dy, C.ink, 1.5, 1, 12); }
+  for (let i = 0; i <= 40; i++) { const x = lerp(ax, bx, i / 40); line(x, dy - (i % 5 ? 6 : 12), x, dy, rgba(C.ink, .6), 1, clamp(dk * 40 - i)); }
+  text("d = ?", W / 2 - 100, dy + 54, { size: 28, w: 700, align: "center", color: C.ink, a: dk });
+  // the word
+  bigWord("దూరం", 1180, 430, 200, sc.a + .5, t, { ink: C.ink, glow: null, noGlow: true, strokeCol: C.ink, lwStroke: 1.6 });
+  ipa("/d̪uːɾam/", 1190, 490, { color: C.or, size: 24, a: prog(lt, 1.2, 1.6) });
+  label("NOUN · DISTANCE, FARNESS", 1190, 524, { color: rgba(C.ink, .65), size: 13, a: prog(lt, 1.4, 1.8) });
+  stamp(1500, 820, 26.85, t, ["దూరం", "PENDING"], { rot: -8 });
+  g.restore();
+  // 27.77 — the band stops: the paper drops into shadow
+  const stop = prog(t, 27.74, 27.95); if (stop > 0) { g.save(); g.globalAlpha = stop * .78; g.fillStyle = C.bg; g.fillRect(0, 0, W, H); g.restore(); }
+}
+
+/* 05 · పాదం — the stride: footfalls on every beat, gait-cycle dial */
+function s5(t, sc) {
+  const lt = t - sc.a;
+  bigWord("పాదం", 150, 430, 240, sc.a + .1, t, {});
+  ipa("/paːd̪am/", 160, 500, { size: 26, a: prog(lt, .6, 1) });
+  label("05 / పాదం — FOOT · ONE STEP PER BEAT", 160, 200, { size: 15, color: rgba(C.cr, .8), a: prog(lt, 0, .3) });
+  label("NOUN · FOOT, STEP", 160, 540, { size: 13, a: prog(lt, .8, 1.2) });
+  // ground line + footprints scrolling left; one lands on every beat
+  const gy = 760, speed = 260;
+  line(120, gy, W - 120, gy, rgba(C.cr, .3), 1, prog(lt, 0, .4));
+  for (let i = 0; i < M.beats.length; i++) {
+    const b = M.beats[i]; if (b < sc.a - .01 || b > t) continue;
+    const x = 1700 - (t - b) * speed, side = i % 2 ? -1 : 1, age = t - b;
+    if (x < 120) continue;
+    const p = eo5(prog(age, 0, .18));
+    g.save(); g.translate(x, gy + side * 40); g.rotate(-.08 * side); g.globalAlpha = clamp(1 - age / 6) * p;
+    g.strokeStyle = age < .25 ? C.or : rgba(C.cr, .7); g.lineWidth = 2; g.shadowColor = C.or; g.shadowBlur = age < .25 ? 24 : 0;
+    g.beginPath(); g.ellipse(0, 0, 34 * lerp(1.6, 1, p), 15, 0, 0, 7); g.stroke();
+    for (let k = 0; k < 4; k++) { g.beginPath(); g.arc(40 + k * 1, -12 + k * 8, 4, 0, 7); g.stroke(); }
+    g.restore();
+    if (age < .5) label(`STEP ${String(i - beatIdx(sc.a) + 1).padStart(3, "0")}`, x, gy + side * 40 + side * 46, { size: 11, align: "center", color: C.or, a: 1 - age / .5 });
+  }
+  // gait-cycle dial
+  const cx = 1460, cy = 420, R = 150, ph = sinceBeat(t) / BEAT;
+  const a = prog(lt, .3, .8);
+  circle(cx, cy, R, { stroke: rgba(C.cr, .35), lw: 1.5, a });
+  circle(cx, cy, R, { stroke: C.or, lw: 4, a0: -Math.PI / 2, a1: -Math.PI / 2 + Math.PI * 2 * .4, a });
+  label("SWING 40%", cx + R + 20, cy - 60, { size: 12, color: C.or, a }); label("STANCE 60%", cx - R - 20, cy + 70, { size: 12, align: "right", a });
+  const ang = -Math.PI / 2 + ph * Math.PI * 2;
+  line(cx, cy, cx + Math.cos(ang) * R, cy + Math.sin(ang) * R, C.cr, 2, a); circle(cx + Math.cos(ang) * R, cy + Math.sin(ang) * R, 7, { fill: C.or, glow: C.or, a });
+  for (let i = 0; i < 12; i++) { const q = i / 12 * Math.PI * 2; line(cx + Math.cos(q) * (R - 10), cy + Math.sin(q) * (R - 10), cx + Math.cos(q) * R, cy + Math.sin(q) * R, rgba(C.cr, .5), 1, a); }
+  label("GAIT CYCLE", cx, cy - R - 26, { align: "center", size: 12, a });
+  label(`PHASE ${(ph * 100).toFixed(0).padStart(3, "0")}%   CADENCE 143.7 /min`, cx, cy + R + 40, { align: "center", size: 13, a });
+  // velocity vector toward her (off-frame right)
+  arrow(1110, 640, 1110 + 120 + env("low", t) * 120, 640, C.or, 2.5, a, 14); label("v → ఆమె", 1110, 620, { size: 12, a, color: C.or });
+}
+
+/* 06 · క్షణం — a moment: the stopwatch ticks on the beat; క + ్ + ష = క్ష */
+function s6(t, sc) {
+  const lt = t - sc.a;
+  bigWord("క్షణం", 150, 430, 230, sc.a + .1, t, {});
+  ipa("/kʂaɳam/", 160, 500, { size: 26, a: prog(lt, .6, 1) });
+  label("06 / క్షణం — A MOMENT · THE SMALLEST UNIT OF TIME", 160, 200, { size: 15, color: rgba(C.cr, .8), a: prog(lt, 0, .3) });
+  label("NOUN · MOMENT, INSTANT", 160, 540, { size: 13, a: prog(lt, .8, 1.2) });
+  // conjunct: క + ్ + ష = క్ష (assembles when the lyric reaches క్షణం, 37.5 s)
+  const c0 = 37.6, parts = ["క", "+", "్", "+", "ష", "=", "క్ష"], xs = [170, 270, 330, 400, 460, 570, 650];
+  parts.forEach((p, i) => { const a = eo(prog(t, c0 + i * .12, c0 + i * .12 + .3)); if (a <= 0) return;
+    const isRes = i === 6, isOp = p === "+" || p === "=";
+    text(p, xs[i], 700 - (1 - a) * 20, { f: isOp ? MONO : TE, size: isOp ? 40 : isRes ? 110 : 84, w: isRes ? 700 : 500, a, color: isRes ? C.or : isOp ? rgba(C.cr, .6) : C.cr, glow: isRes ? C.or : null }); });
+  label("CONJUNCT · సంయుక్తాక్షరం", 170, 760, { size: 12, a: prog(t, c0 + .9, c0 + 1.2) });
+  ipa("k + ʂ → kʂ", 170, 790, { size: 18, a: prog(t, c0 + .9, c0 + 1.2) });
+  // stopwatch
+  const cx = 1400, cy = 520, R = 260, a = prog(lt, .2, .7);
+  circle(cx, cy, R, { stroke: rgba(C.cr, .4), lw: 2, a }); circle(cx, cy, R - 30, { stroke: rgba(C.cr, .12), lw: 1, a });
+  for (let i = 0; i < 64; i++) { const q = -Math.PI / 2 + i / 64 * Math.PI * 2, L = i % 4 ? 10 : 24;
+    line(cx + Math.cos(q) * (R - L), cy + Math.sin(q) * (R - L), cx + Math.cos(q) * R, cy + Math.sin(q) * R, i % 4 ? rgba(C.cr, .4) : C.cr, i % 4 ? 1 : 2, a); }
+  g.save(); g.globalAlpha = a; g.fillStyle = C.cr; g.fillRect(cx - 22, cy - R - 46, 44, 20); g.restore();
+  const bi = beatIdx(t) - beatIdx(sc.a), ph = clamp(sinceBeat(t) / .09);
+  const step = (bi + eo5(ph)) / 16;                                            // 16 beats = one revolution = one phrase
+  g.save(); g.globalAlpha = .2 * a; g.fillStyle = C.or; g.beginPath(); g.moveTo(cx, cy); g.arc(cx, cy, R - 34, -Math.PI / 2, -Math.PI / 2 + step * Math.PI * 2); g.closePath(); g.fill(); g.restore();
+  const q = -Math.PI / 2 + step * Math.PI * 2;
+  g.save(); g.shadowColor = C.or; g.shadowBlur = 20; line(cx, cy, cx + Math.cos(q) * (R - 40), cy + Math.sin(q) * (R - 40), C.or, 3, a); g.restore();
+  circle(cx, cy, 9, { fill: C.cr, a });
+  label(`1 BEAT = ${BEAT.toFixed(3)} s`, cx, cy + 90, { align: "center", size: 14, a });
+  text((t).toFixed(2) + " s", cx, cy + 150, { size: 44, w: 700, align: "center", color: C.cr, a });
+  label("16 BEATS = 1 REVOLUTION = 1 PHRASE", cx, cy + R + 50, { align: "center", size: 12, a });
+}
+
+/* 07 · cream form — the spectrum: sky's edge, a prism, seven rays; red stamp ఏడు రంగులు */
+function s7(t, sc) {
+  const lt = t - sc.a; const slam = 1 + .025 * (1 - eo(prog(lt, 0, .3)));
+  g.save(); g.translate(W / 2, H / 2); g.scale(slam, slam); g.translate(-W / 2, -H / 2);
+  paper(t, sc.a, "హరివిల్లు · SPECTRUM OF WHITE LIGHT", "07");
+  // the sky's last edge (horizon arc)
+  const ha = eio(prog(lt, 0, 1.0));
+  g.save(); g.strokeStyle = C.ink; g.lineWidth = 1.5; g.beginPath(); g.arc(W / 2, 2600, 2380, -Math.PI / 2 - .42 * ha, -Math.PI / 2 + .42 * ha); g.stroke(); g.restore();
+  label("ఆకాశం చివరి అంచు — THE SKY'S LAST EDGE", W / 2, 205, { color: rgba(C.ink, .7), size: 13, align: "center", a: prog(lt, .6, 1) });
+  // prism + rays
+  const px = 760, py = 600, s = 150;
+  const pk = prog(lt, .4, 1.0);
+  g.save(); g.globalAlpha = pk; g.strokeStyle = C.ink; g.lineWidth = 2.5; g.beginPath(); g.moveTo(px, py - s); g.lineTo(px + s * .9, py + s * .6); g.lineTo(px - s * .9, py + s * .6); g.closePath(); g.stroke();
+  g.fillStyle = rgba(C.ink, .05); g.fill(); g.restore();
+  const rin = eio(prog(lt, .9, 1.6));
+  line(180, 470, lerp(180, px - 60, rin), lerp(470, py + 40, rin), C.ink, 3);
+  label("WHITE LIGHT", 190, 450, { color: C.ink, size: 12, a: rin });
+  const nm = [700, 650, 600, 570, 520, 470, 420];
+  const beats7 = M.beats.filter((b) => b >= sc.a + 1.5).slice(0, 7);
+  nm.forEach((n, i) => { const b = beats7[i] ?? 1e9, k = eio(prog(t, b, b + .35)); if (k <= 0) return;
+    const ang = -.06 + i * .07, ex = px + 70 + Math.cos(ang) * 700 * k, ey = py + 60 + Math.sin(ang) * 700 * k;
+    const col = i === 1 ? C.or : C.ink;
+    line(px + 50, py + 54, ex, ey, col, i === 1 ? 3 : 1.6, 1);
+    if (k > .9) label(`${n} nm`, ex + 12, ey + 5, { color: i === 1 ? C.or : rgba(C.ink, .75), size: 13 }); });
+  label("θ = REFRACTION", px - 20, py + s * .6 + 40, { color: rgba(C.ink, .6), size: 12, align: "center", a: pk });
+  // the word + its double consonant ల్ల
+  bigWord("హరివిల్లు", 1150, 470, 150, sc.a + .3, t, { ink: C.ink, noGlow: true, strokeCol: C.ink, lwStroke: 1.4 });
+  ipa("/ɦariʋilːu/", 1160, 520, { color: C.or, size: 22, a: prog(lt, 1.0, 1.4) });
+  label("NOUN · RAINBOW", 1160, 552, { color: rgba(C.ink, .65), size: 13, a: prog(lt, 1.2, 1.6) });
+  const c0 = 44.5, parts = ["ల", "+", "్", "+", "ల", "=", "ల్ల"], xs = [140, 220, 270, 330, 380, 470, 540];
+  parts.forEach((p, i) => { const a = eo(prog(t, c0 + i * .1, c0 + i * .1 + .25)); if (a <= 0) return;
+    const isOp = p === "+" || p === "=", isRes = i === 6;
+    text(p, xs[i], 860, { f: isOp ? MONO : TE, size: isOp ? 34 : isRes ? 90 : 70, w: isRes ? 700 : 500, a, color: isRes ? C.or : C.ink }); });
+  label("DOUBLE CONSONANT · ద్విత్వాక్షరం", 140, 900, { color: rgba(C.ink, .65), size: 12, a: prog(t, c0 + .8, c0 + 1) });
+  stamp(1700, 290, 47.27, t, ["ఏడు రంగులు", "7 COLOURS"], { rot: 6, w: 380, big: 50 });
+  g.restore();
+}
+
+/* 08 · దూరమంతా — radar: his blip closes in, one ring per bar */
+function s8(t, sc) {
+  const lt = t - sc.a;
+  bigWord("దూరమంతా", 150, 400, 150, sc.a + .1, t, {});
+  ipa("/d̪uːɾamant̪aː/", 160, 450, { size: 22, a: prog(lt, .6, 1) });
+  label("08 / దూరమంతా — ALL THIS DISTANCE · CLOSING IN", 160, 200, { size: 15, color: rgba(C.cr, .8), a: prog(lt, 0, .3) });
+  const cx = 1340, cy = 540, a = prog(lt, .1, .6);
+  for (let i = 1; i <= 5; i++) circle(cx, cy, i * 80, { stroke: rgba(C.cr, .25), lw: 1, a });
+  line(cx - 420, cy, cx + 420, cy, rgba(C.cr, .15), 1, a); line(cx, cy - 420, cx, cy + 420, rgba(C.cr, .15), 1, a);
+  for (let i = 1; i <= 5; i++) label(`R${i}`, cx + i * 80 + 4, cy - 6, { size: 10, a: a * .6 });
+  // sweep
+  const sw = (t * 1.6) % (Math.PI * 2);
+  for (let k = 0; k < 18; k++) { g.save(); g.globalAlpha = a * .22 * (1 - k / 18); g.fillStyle = C.or; g.beginPath(); g.moveTo(cx, cy); g.arc(cx, cy, 400, sw - (k + 1) * .03, sw - k * .03); g.closePath(); g.fill(); g.restore(); }
+  // her at the centre
+  circle(cx, cy, 8, { fill: C.or, glow: C.or, blur: 30 }); label("ఆమె · TARGET", cx + 16, cy + 26, { size: 12, color: C.or });
+  // his blip: range steps down on every beat of the build
+  const bs = M.beats.filter((b) => b >= sc.a && b <= t).length, total = M.beats.filter((b) => b >= sc.a && b < sc.b).length;
+  const rng = lerp(400, 70, eo(bs / total)), bear = -2.3 + bs * .05;
+  const bx = cx + Math.cos(bear) * rng, by = cy + Math.sin(bear) * rng, pul = clamp(1 - sinceBeat(t) / .25);
+  circle(bx, by, 7, { fill: C.cr, glow: C.or, blur: 22 }); circle(bx, by, 7 + pul * 26, { stroke: C.cr, lw: 1.5, a: pul });
+  line(cx, cy, bx, by, rgba(C.or, .6), 1, 1, [6, 6]);
+  label("అతడు", bx + 14, by - 12, { size: 12 });
+  label(`RANGE ${(rng / 80).toFixed(2)} R   BEARING ${(((bear * 180 / Math.PI) % 360 + 360) % 360).toFixed(1)}°`, cx, cy + 470, { align: "center", size: 13, a });
+  // bar-graph of the closing distance (one bar per beat)
+  for (let i = 0; i < bs; i++) { const h = lerp(140, 14, i / total); g.save(); g.globalAlpha = .8; g.fillStyle = i === bs - 1 ? C.or : rgba(C.cr, .4); g.fillRect(160 + i * 22, 760 - h, 12, h); g.restore(); }
+  label("d PER BEAT", 160, 790, { size: 12, a });
+}
+
+/* 09 · నువ్వే — I wandered around you: a Kepler orbit, equal areas per beat; వ + ్ + వ = వ్వ */
+function s9(t, sc) {
+  const lt = t - sc.a;
+  bigWord("నువ్వే", 150, 420, 230, sc.a + .1, t, {});
+  ipa("/nuʋːeː/", 160, 490, { size: 26, a: prog(lt, .6, 1) });
+  label("09 / నువ్వే — YOU · I WANDERED, CIRCLING YOU", 160, 200, { size: 15, color: rgba(C.cr, .8), a: prog(lt, 0, .3) });
+  const c0 = 57.3, parts = ["వ", "+", "్", "+", "వ", "=", "వ్వ"], xs = [170, 260, 315, 380, 440, 540, 620];
+  parts.forEach((p, i) => { const a = eo(prog(t, c0 + i * .12, c0 + i * .12 + .3)); if (a <= 0) return;
+    const isOp = p === "+" || p === "=", isRes = i === 6;
+    text(p, xs[i], 680, { f: isOp ? MONO : TE, size: isOp ? 40 : isRes ? 100 : 80, w: isRes ? 700 : 500, a, color: isRes ? C.or : isOp ? rgba(C.cr, .6) : C.cr, glow: isRes ? C.or : null }); });
+  label("DOUBLE CONSONANT · ద్విత్వాక్షరం", 170, 740, { size: 12, a: prog(t, c0 + .9, c0 + 1.2) });
+  // orbit
+  const cx = 1350, cy = 540, A = 380, e = .62, B = A * Math.sqrt(1 - e * e), fx = cx + A * e, a = prog(lt, .1, .7);
+  g.save(); g.globalAlpha = a; g.strokeStyle = rgba(C.cr, .4); g.lineWidth = 1.5; g.beginPath(); g.ellipse(cx, cy, A, B, 0, 0, 7); g.stroke(); g.restore();
+  line(cx - A - 30, cy, cx + A + 30, cy, rgba(C.cr, .12), 1, a);
+  circle(fx, cy, 10, { fill: C.or, glow: C.or, blur: 36 }); label("F · ఆమె", fx + 16, cy + 30, { size: 12, color: C.or });
+  // position by Kepler's equation (M = E − e sinE), one revolution per 8 beats
+  const per = BEAT * 8, Mn = ((t - sc.a) / per) * Math.PI * 2;
+  const pos = (Mx) => { let E = Mx; for (let i = 0; i < 8; i++) E = E - (E - e * Math.sin(E) - Mx) / (1 - e * Math.cos(E)); return [cx + A * Math.cos(E), cy + B * Math.sin(E)]; };
+  // equal-area wedges: one per beat, alternating fill
+  const bi = Math.floor((t - sc.a) / BEAT);
+  for (let k = Math.max(0, bi - 2); k <= bi; k++) {
+    const m0 = (k / 8) * Math.PI * 2, m1 = Math.min(Mn, ((k + 1) / 8) * Math.PI * 2);
+    g.save(); g.globalAlpha = a * (k % 2 ? .1 : .2); g.fillStyle = C.or; g.beginPath(); g.moveTo(fx, cy);
+    for (let s = 0; s <= 16; s++) { const [x, y] = pos(lerp(m0, m1, s / 16)); g.lineTo(x, y); } g.closePath(); g.fill(); g.restore();
+  }
+  const [px, py] = pos(Mn), [qx, qy] = pos(Mn + .05);
+  circle(px, py, 8, { fill: C.cr, glow: C.or, blur: 24 }); label("అతడు", px + 14, py - 14, { size: 12 });
+  const vl = 60 / Math.hypot(qx - px, qy - py) * 1.0;
+  arrow(px, py, px + (qx - px) * vl * 1.4, py + (qy - py) * vl * 1.4, C.or, 2, a, 12);
+  label("EQUAL AREAS IN EQUAL BEATS", cx, cy + B + 70, { align: "center", size: 13, a });
+  label(`e = ${e.toFixed(2)}   PERIOD = 8 BEATS = ${per.toFixed(2)} s`, cx, cy + B + 98, { align: "center", size: 12, a: a * .7 });
+}
+
+/* 10 · the title — the headline returns; the title is sung and fills with light */
+function s10(t, sc) {
+  const lt = t - sc.a, y = 360;
+  const lk = eio(prog(lt, 0, 1.2));
+  g.save(); g.shadowColor = C.or; g.shadowBlur = 26; line(lerp(W / 2, 300, lk), y, lerp(W / 2, 1620, lk), y, C.or, 3); g.restore();
+  label(`10 / ${SONG.titleText} — THE TITLE, SUNG`, 300, y - 70, { size: 15, color: rgba(C.cr, .8), a: prog(lt, .4, .8) });
+  const syl = SONG.syllables.map((s) => [s[0], s[2]]);
+  const size = 270, gap = 30, ws = syl.map((s) => measure(s[0], size, 700, TE)), tot = ws.reduce((a, b) => a + b, 0) + gap * 3;
+  let x = W / 2 - tot / 2; const base = 670;
+  const sung = SONG.sungTimes;
+  syl.forEach(([s, ip], i) => {
+    const cx = x + ws[i] / 2, hk = eo(prog(lt, .8 + i * .25, 1.2 + i * .25));
+    line(cx, y, cx, lerp(y, base - size * .78, hk), rgba(C.cr, .45), 1);
+    // waiting outline, then filled with light on its sung beat
+    text(s, x, base, { f: TE, w: 700, size, color: null, stroke: rgba(C.cr, .5), lw: 1.5, a: hk });
+    const f = eo(prog(t, sung[i], sung[i] + .25));
+    if (f > 0) text(s, x, base, { f: TE, w: 700, size, color: C.cr, glow: C.or, blur: 60, a: f });
+    ipa(ip, cx, base + 84, { align: "center", size: 24, a: f > 0 ? f : hk * .35, color: f > 0 ? C.or : C.cr });
+    x += ws[i] + gap;
+  });
+  // anticipation: a breathing ring of beat dots before the hook
+  if (t < 66.64) { const n = M.beats.filter((b) => b >= sc.a && b <= t).length;
+    for (let i = 0; i < n; i++) { const q = -Math.PI / 2 + i / 12 * Math.PI * 2; circle(W / 2 + Math.cos(q) * 470, 520 + Math.sin(q) * 300, 3, { fill: i === n - 1 ? C.or : rgba(C.cr, .4) }); } }
+  // burst of light on the sung name
+  const k = t - 66.64;
+  if (k > 0) {
+    const cx = W / 2, cy = 560;
+    for (let i = 0; i < 48; i++) { const q = i / 48 * Math.PI * 2 + hash(i) * .1, r0 = 120 + eo(k / 1.2) * 300, r1 = r0 + 80 + hash(i * 3) * 400 * eo(k / 1.4);
+      line(cx + Math.cos(q) * r0, cy + Math.sin(q) * r0, cx + Math.cos(q) * r1, cy + Math.sin(q) * r1, i % 6 ? rgba(C.cr, .5) : C.or, i % 6 ? 1 : 2, clamp(1 - k / 1.6)); }
+    for (let i = 0; i < 90; i++) { const q = hash(i * 1.7) * Math.PI * 2, sp = 300 + hash(i * 5.3) * 900, d = sp * (1 - Math.exp(-k * 2)) / 2;
+      circle(cx + Math.cos(q) * d, cy + Math.sin(q) * d * .7 + k * k * 40, 1.5 + hash(i) * 2.5, { fill: i % 3 ? C.cr : C.or, a: clamp(1 - k / 1.4) }); }
+    const fl = Math.exp(-k * 6); if (fl > .01) { g.save(); g.globalAlpha = fl * .55; const gr = g.createRadialGradient(cx, cy, 0, cx, cy, 900); gr.addColorStop(0, "#fff3e6"); gr.addColorStop(.3, rgba(C.or, .6)); gr.addColorStop(1, rgba(C.or, 0)); g.fillStyle = gr; g.fillRect(0, 0, W, H); g.restore(); }
+  }
+  ipa(SONG.titleIPA, W / 2, 860, { align: "center", size: 30, a: prog(t, 67.8, 68.1) });
+}
+
+/* ---------- cut accent: an orange scan bar on every scene change ---------- */
+function cutAccent(t, sc) {
+  const k = (t - sc.a) / .2; if (k < 0 || k > 1 || sc.n === 1) return;
+  const y = eio(k) * H;
+  g.save(); g.fillStyle = C.or; g.globalAlpha = .9 * (1 - k); g.fillRect(0, y - 3, W, 6); g.globalAlpha = .07 * (1 - k); g.fillRect(0, 0, W, H); g.restore();
+}
+
+/* =====================================================================================
+   renderFrame(t) — the whole film is this pure function of t
+   ===================================================================================== */
+function renderFrame(t) {
+  const cv = document.getElementById("cv"); g = cv.getContext("2d");
+  g.setTransform(1, 0, 0, 1, 0, 0); g.globalCompositeOperation = "source-over"; g.globalAlpha = 1; g.shadowBlur = 0;
+  const sc = SC.find((s) => t >= s.a && t < s.b) || SC[SC.length - 1];
+  g.fillStyle = C.bg; g.fillRect(0, 0, W, H);
+  // a faint radial lift so the black never bands
+  if (!sc.paper) { const gr = g.createRadialGradient(W / 2, H * .45, 0, W / 2, H * .45, 1100); gr.addColorStop(0, "#141416"); gr.addColorStop(1, C.bg); g.fillStyle = gr; g.fillRect(0, 0, W, H); }
+  // micro camera kick on the cut
+  const kick = Math.exp(-(t - sc.a) * 14) * (sc.n > 1 ? 1 : 0);
+  g.save(); g.translate(kick * 10, 0);
+  sc.fn(t, sc);
+  g.restore();
+  lyric(t, sc.paper);
+  hud(t, sc, sc.paper);
+  cutAccent(t, sc);
+  // end: fade to black with the audio
+  const fo = prog(t, 68.05, 69); if (fo > 0) { g.fillStyle = rgba(C.bg, fo); g.fillRect(0, 0, W, H); }
+  // bloom: a blurred, screened copy of the frame (light on paper scenes)
+  const bl = document.getElementById("bloom"), bg = bl.getContext("2d");
+  bg.clearRect(0, 0, 960, 540); bg.drawImage(cv, 0, 0, 960, 540);
+  bl.style.opacity = sc.paper ? ".12" : ".55";
+  const vg = document.getElementById("fxVignette"); if (vg) vg.style.opacity = sc.paper ? ".3" : "1";
+}
+
+Film.build((tl) => {
+  FX.grain(tl, { opacity: .085, fps: 15 });
+  FX.vignette(tl, { strength: .45, inner: 58 });
+  Film.onFrame(renderFrame);
+});
+</script>
+</body>
+</html>

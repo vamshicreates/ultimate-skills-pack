@@ -1,0 +1,15 @@
+# Assessment 3: self-avatar introduction review guide
+
+Official source: framework page 2. Week 9, final AI avatar of self as introduction, /100. Read `rubric.json` for exact criteria and maxima. These prompts help interpret evidence; they add no separate sub-marks or required deliverables.
+
+| Official criterion | Evidence to inspect | Useful feedback when weak |
+| --- | --- | --- |
+| Avatar resemblance and presentation /20 | The avatar is presented as the student's chosen digital self and suits their personal introduction. | Identify presentation choices that weaken that role and suggest a concrete improvement. Do not require photorealism, infer identity, or demand a face reference absent from the brief. State when physical resemblance cannot be independently verified; assess the official chosen-digital-self presentation using available evidence. |
+| Introduction content and clarity /20 | Clear self-introduction and understandable relevant information. Inspect actual spoken/text content and organisation. | Identify what the viewer still does not understand and suggest a clearer opening or specific relevant detail. Do not require phone numbers, private history, or a fixed personal-information checklist. |
+| Delivery and communication /15 | Speech, tone, pacing and presentation that communicate clearly. | Cite rushed/flat/unclear sections and give a practical delivery or script change. Judge intelligibility rather than accent or personal presentation preferences. |
+| Lip-sync and avatar motion /15 | Sound-picture alignment, mouth shapes, facial movement and gestures, including repeated distracting mismatches. | Reinspect with audio at normal speed; cite ranges and recurrence. Distinguish genuine sync errors from an unsupported player delay. Stills or a transcript cannot substantiate this score. |
+| Audio and intelligibility /10 | Audible understandable speech, noise, distortion and consistent levels. | Identify the exact audible issue and suggest recording, synthesis or mix adjustments. Do not confuse an assessor's unfamiliarity with a language with poor intelligibility. |
+| Visual quality and framing /10 | Framing, background, image quality and readability that support the introduction. | Cite distracting crops, low detail, occlusion or background issues and suggest a framing/background correction. Do not score attractiveness or physical traits. |
+| Editing and final delivery /10 | Completeness, appropriate pacing and finished presentation. | Point to abrupt openings/endings, dead sections or unfinished edits and suggest a precise fix. Do not invent a required length, resolution or aspect ratio. |
+
+Evaluate the full introduction, including any name card or closing text, and check that the presented identity agrees with the source row where explicitly stated. Conflicting names need reconciliation, not guesses about who appears on screen. Where the video's central self-introduction is absent, explain its effects under the relevant official criteria without inventing a separate disqualification.

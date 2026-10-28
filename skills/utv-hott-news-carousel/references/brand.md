@@ -1,0 +1,16 @@
+# UTV Hott News visual and editorial rules
+
+- Canvas: 1080 × 1350 px, four pages per language.
+- Brand palette sampled from the user's reference: warm yellow `#EDB73F`, near-black `#111111`, red `#AD2B21`, white `#FFFFFF`.
+- Typography: use Poppins for every editable English/Latin text layer, including headings, cards, labels, attribution, CTA, and Instagram handle. Poppins has no Telugu glyphs; a Telugu carousel needs a Telugu-capable font for those characters. Never describe fallback Telugu lettering as Poppins. If the user insists on Poppins only, deliver English and ask before making an exception for Telugu. The supplied logo and official store badges remain image assets.
+- Logo: the user's `utvnews.png`, bundled as `assets/logo.png`, shown as a small icon at the top left of every page.
+- Social mark: a white Instagram icon immediately beside `@utvhottnewsapp`, aligned at the bottom right of every page. Keep both legible against the existing palette. Do not add another logo, handle, or website in the branding area.
+- Cover: when a suitable source photo is available, use it with a dark gradient at the bottom, yellow headline, and small category pill. The photo should show the subject without cropping faces. For a screenshot without a usable photo, use the text-led yellow and black cover with the same headline treatment; do not place unrelated imagery.
+- Page 2: yellow background, black rounded point cards, red number circles, brief attribution qualifier.
+- Page 3: black background with a yellow top accent clear of the logo, one strong context question, a concise attributed answer, and source line.
+- Page 4: topic-specific question and a clear invitation to download UTV Hott News App. Place the framed `assets/store-badges.svg` beneath the download panel, with both App Store and Google Play badges visible. It preserves the supplied badge image while removing its large white margins. Keep the same logo and Instagram footer. Do not imply a clickable store link unless one has been provided and checked.
+- Alignment: every heading, card, qualifier, source, and CTA content uses the same 54 px left and right inset. Keep all three point cards the same height; vertically center the number and text within each card. Keep the attribution close to the cards. Let variable text flow within a fixed content column instead of positioning each text block independently.
+- Shape layering: each colored shape is an empty background layer. Its label is a separate text layer above it, centered horizontally and vertically within the shape. Use this for category pills, fact cards, number circles, context tags, the download panel, and the footer. Verify independent selection in Canva after import.
+- Telugu text should be idiomatic and readable; English copy should be written for English readers, rather than rigidly translated.
+- For uncertain developments, use language such as “expected to discuss,” “reportedly considering,” or Telugu equivalents. Preserve any qualification in the source article.
+- Source reference designs from the first completed story: [Telugu](https://www.canva.com/design/DAHXNYyD-dM/C0_emFJeYdJntFnT2ruIUw/edit) and [English](https://www.canva.com/design/DAHXNXdF_MM/-nE4xGw18RnM260eBilmpw/edit).

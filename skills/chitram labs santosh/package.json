@@ -1,0 +1,16 @@
+{
+  "name": "chitram-labs-santosh",
+  "version": "1.0.0",
+  "description": "A knowledge-heavy motion-design skill: it understands ideas, product references and reference videos, writes expert timecoded video prompts, and builds films as HTML/CSS/GSAP code with a preview and an MP4 render path. 15 files — within the Claude.ai skill limit (200) and ChatGPT's knowledge-file limit (20).",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "playwright-core": "^1.56.1"
+  }
+}

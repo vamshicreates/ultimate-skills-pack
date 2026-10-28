@@ -1,0 +1,53 @@
+{
+  "assessment_id": 3,
+  "title": "Assessment 3 — Self Avatar Introduction",
+  "week": 9,
+  "max_marks": 100,
+  "source_document": "MRU AICC Final Assessment Framework and Rubrics 2026.pdf",
+  "source_sha256": "e0830e3ab56558b4d2ede034864c3c452eda98d9acf7f2e050cb33f3e7d97605",
+  "source_page": 2,
+  "criteria": [
+    {
+      "id": "c1",
+      "label": "Avatar resemblance and presentation",
+      "max_marks": 20,
+      "official_description": "Avatar is presented as the student's chosen digital self and suits a personal introduction."
+    },
+    {
+      "id": "c2",
+      "label": "Introduction content and clarity",
+      "max_marks": 20,
+      "official_description": "The student introduces themself clearly and communicates relevant information understandably."
+    },
+    {
+      "id": "c3",
+      "label": "Delivery and communication",
+      "max_marks": 15,
+      "official_description": "Speech, tone, pacing and presentation are appropriate and easy to follow."
+    },
+    {
+      "id": "c4",
+      "label": "Lip-sync and avatar motion",
+      "max_marks": 15,
+      "official_description": "Lip-sync, facial movement and gestures are reasonably convincing and not repeatedly distracting."
+    },
+    {
+      "id": "c5",
+      "label": "Audio and intelligibility",
+      "max_marks": 10,
+      "official_description": "Speech is audible and understandable, with manageable noise or distortion."
+    },
+    {
+      "id": "c6",
+      "label": "Visual quality and framing",
+      "max_marks": 10,
+      "official_description": "Framing, background and image quality support a clear introduction."
+    },
+    {
+      "id": "c7",
+      "label": "Editing and final delivery",
+      "max_marks": 10,
+      "official_description": "Video is complete, appropriately paced and presented as a finished submission."
+    }
+  ]
+}

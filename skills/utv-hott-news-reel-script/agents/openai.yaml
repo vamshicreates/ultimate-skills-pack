@@ -1,0 +1,4 @@
+interface:
+  display_name: "UTV Hott News Reel Script"
+  short_description: "Turn a UTV article link into a news reel script"
+  default_prompt: "Use $utv-hott-news-reel-script with this UTV Hott News article link: "

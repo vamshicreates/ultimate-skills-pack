@@ -1,0 +1,4 @@
+interface:
+  display_name: "Character → Costume & Continuity"
+  short_description: "Design full-film costumes and a visual continuity PDF"
+  default_prompt: "Use $film-costume-continuity on this full screenplay to design character and costume boards, coordinate colours, track continuity, and deliver a detailed PDF."

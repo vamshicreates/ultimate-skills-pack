@@ -1,0 +1,25 @@
+{
+  "duration": 30,
+  "mood": "warm",
+  "bpm": 96,
+  "chords": [
+    {"t": 0.0,  "notes": "D3 A3 D4 E4 A4"},
+    {"t": 3.0,  "notes": "D3 A3 D4 F#4 A4 E5"},
+    {"t": 7.0,  "notes": "B2 F#3 D4 F#4 A4 C#5"},
+    {"t": 10.0, "notes": "G2 D3 B3 D4 F#4 A4"},
+    {"t": 13.0, "notes": "A2 E3 A3 C#4 E4 B4"},
+    {"t": 16.0, "notes": "D3 A3 D4 F#4 A4 C#5"},
+    {"t": 21.0, "notes": "G2 D3 B3 D4 G4 B4"},
+    {"t": 24.0, "notes": "E2 B2 G3 B3 D4 G4"},
+    {"t": 27.0, "notes": "D3 A3 D4 F#4 A4 D5 F#5"}
+  ],
+  "pulse": {"from": 3.0, "to": 26.5, "gain": 0.5, "skip": [[15.0, 16.0]]},
+  "piano": [{"t": 0.9, "note": "D5"}, {"t": 7.0, "note": "F#5"}, {"t": 16.0, "note": "A5"}],
+  "sfx": [
+    {"t": 3.0,  "type": "impact"},
+    {"t": 15.0, "type": "whoosh", "dur": 1.0},
+    {"t": 23.0, "type": "riser", "dur": 1.2},
+    {"t": 27.0, "type": "chime"}
+  ],
+  "end": {"fade": 0.9}
+}

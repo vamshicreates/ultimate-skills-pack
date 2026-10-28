@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "sourceImages": [
+    {
+      "file": "sourceimages/reference.png",
+      "pixelWidth": null,
+      "pixelHeight": null,
+      "aspectRatio": null,
+      "view": "unknown"
+    }
+  ],
+  "units": {
+    "source": "cm",
+    "maya": "cm",
+    "gltf": "m"
+  },
+  "overall": {
+    "width": null,
+    "height": null,
+    "depth": null
+  },
+  "measurements": [
+    {
+      "id": "example_measurement",
+      "value": null,
+      "unit": "cm",
+      "fromAnchor": "anchor_a",
+      "toAnchor": "anchor_b",
+      "source": "user|annotation|scale_bar|known_object|proportion|visual_estimate",
+      "confidence": "exact|high|medium|low",
+      "note": ""
+    }
+  ],
+  "anchors": {},
+  "symmetryPairs": [],
+  "requiredParts": [],
+  "tolerance": {
+    "absolute": 0.2,
+    "unit": "cm",
+    "relativePercent": 1.0
+  },
+  "assumptions": []
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Script Doctor"
+  short_description: "Review micro-dramas, films and series by format and length"
+  default_prompt: "Use $script-doctor to review my micro-drama, film or series scripts in proportion to their length and format, score comparable units, and save a local PDF for every script or episode."

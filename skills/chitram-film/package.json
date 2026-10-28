@@ -1,0 +1,10 @@
+{
+  "name": "chitram-film",
+  "version": "1.0.0",
+  "private": true,
+  "description": "HTML/CSS/GSAP motion films rendered frame-accurately to MP4 (Chitram Film engine).",
+  "type": "module",
+  "dependencies": {
+    "playwright-core": "1.56.1"
+  }
+}

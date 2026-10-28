@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "title": "Synthetic connection study",
+  "audio": "media/example.wav",
+  "duration": 12,
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "lyric_mode": "none",
+  "bpm": 100,
+  "beats": [0, 0.6, 1.2, 1.8, 2.4, 3, 3.6, 4.2, 4.8, 5.4, 6, 6.6, 7.2, 7.8, 8.4, 9, 9.6, 10.2, 10.8, 11.4],
+  "downbeats": [0, 2.4, 4.8, 7.2, 9.6],
+  "phrases": [0, 9.6],
+  "accents": [4.8, 9.6],
+  "drop": null,
+  "sections": [{"id": "study", "start": 0, "end": 12, "label": "connection"}],
+  "shots": [
+    {"id": "reach", "start": 0, "end": 4.8, "event": "A reaching hand creates a light path", "action": "Lean, reach, pause as the path falls short", "transition": "Follow the leading edge toward the gap"},
+    {"id": "bridge", "start": 4.8, "end": 9.6, "event": "The other person extends the missing section", "action": "A reciprocal gesture closes the gap", "transition": "Carry the joining light into a wider view"},
+    {"id": "meet", "start": 9.6, "end": 12, "event": "Both step onto the shared bridge", "action": "One deliberate step each, then a shared stillness", "transition": "Hold and resolve"}
+  ],
+  "lyrics": [],
+  "dialogue": [],
+  "energy": [{"t": 0, "value": 0.2}, {"t": 4.8, "value": 0.7}, {"t": 9.6, "value": 0.9}, {"t": 11.8, "value": 0.2}],
+  "proofs": [],
+  "notes": "Synthetic timings for validating the handoff. No media or render is included."
+}

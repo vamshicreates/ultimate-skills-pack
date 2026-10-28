@@ -1,0 +1,1 @@
+{"name":"peeps-tool","private":true,"dependencies":{"@opeepsfun/open-peeps":"^1.0.6","esbuild":"^0.28.2","react":"^18.3.1","react-dom":"^18.3.1"}}

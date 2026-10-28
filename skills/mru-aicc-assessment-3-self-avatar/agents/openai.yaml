@@ -1,0 +1,4 @@
+interface:
+  display_name: "Assessment 3 — Self Avatar Introduction"
+  short_description: "Review self-avatar videos and create student reports"
+  default_prompt: "Use $mru-aicc-assessment-3-self-avatar to assess the linked response sheet and create individual feedback PDFs and a new Google Sheets results workbook."

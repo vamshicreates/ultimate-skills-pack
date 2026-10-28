@@ -1,0 +1,4 @@
+interface:
+  display_name: "Script Production Breakdown"
+  short_description: "Break down scripts and create 3x3 storyboards"
+  default_prompt: "Use $script-production-breakdown to analyze my locked script and create a production breakdown with a 3x3 storyboard for each scene."

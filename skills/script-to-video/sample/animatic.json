@@ -1,0 +1,24 @@
+{
+  "title": "Script to Video Sample",
+  "fps": 25,
+  "width": 1920,
+  "height": 1080,
+  "captions": true,
+  "shots": [
+    {
+      "id": "S001-SH001",
+      "image": "shots/S001-SH001.png",
+      "duration_s": 3.2,
+      "camera": "Static color card for pipeline test",
+      "dialogue": [
+        {
+          "id": "S001-D001",
+          "character": "Narrator",
+          "text": "Hello. The story begins now.",
+          "audio": "voices/S001-D001.wav",
+          "offset_s": 0.3
+        }
+      ]
+    }
+  ]
+}

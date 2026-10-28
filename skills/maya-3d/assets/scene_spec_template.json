@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "name": "reference_blockout",
+  "units": "cm",
+  "coordinateSystem": {
+    "up": "Y",
+    "forward": "-Z",
+    "handedness": "right"
+  },
+  "materials": {
+    "primary": {
+      "color": "#b86f3e",
+      "metalness": 0.1,
+      "roughness": 0.7
+    },
+    "accent": {
+      "color": "#e7c46a",
+      "metalness": 0.25,
+      "roughness": 0.45
+    }
+  },
+  "anchors": {
+    "roof_front": [-75, 125, 0],
+    "roof_rear": [75, 125, 0]
+  },
+  "parts": [
+    {
+      "name": "BODY_MAIN",
+      "type": "box",
+      "required": true,
+      "size": [220, 55, 110],
+      "position": [0, 93.5, 0],
+      "rotation": [0, 0, 0],
+      "material": "primary"
+    },
+    {
+      "name": "ROOF_CURVE",
+      "type": "tube",
+      "required": true,
+      "path": [
+        [-75, 0, 0],
+        [-45, 28, 0],
+        [0, 38, 0],
+        [45, 28, 0],
+        [75, 0, 0]
+      ],
+      "position": [0, 125, 0],
+      "radius": 4,
+      "tubularSegments": 48,
+      "radialSegments": 10,
+      "startAnchor": "roof_front",
+      "endAnchor": "roof_rear",
+      "continuity": "tangent",
+      "material": "accent"
+    }
+  ],
+  "connections": [
+    {
+      "from": "ROOF_CURVE",
+      "to": "BODY_MAIN",
+      "maxGap": 12
+    }
+  ],
+  "symmetryPairs": [],
+  "validation": {
+    "anchorTolerance": 0.2,
+    "connectionTolerance": 0.2
+  },
+  "assumptions": [
+    "Replace the example parts and measurements with observations from the supplied reference."
+  ]
+}

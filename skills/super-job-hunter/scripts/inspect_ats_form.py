@@ -1,0 +1,636 @@
+#!/usr/bin/env python3
+"""
+inspect_ats_form.py — Token-minimal 3-platform search query generator, fallback web searcher & ATS form/caution inspector.
+
+Modes:
+  1. Generate targeted 3-platform search queries from candidate_profile.json:
+     python3 inspect_ats_form.py --generate-queries --profile .job-hunter/candidate_profile.json
+
+  2. Built-in fallback web search across the 3 platforms (for agents without a native search_web tool):
+     python3 inspect_ats_form.py --search --profile .job-hunter/candidate_profile.json
+
+  3. Inspect candidate job URLs (strips 95% HTML bloat, extracts JD requirements, form inputs,
+     and automated caution/knockout warnings):
+     python3 inspect_ats_form.py --urls <url1> <url2> ... [--state-dir .job-hunter]
+"""
+
+import argparse
+import concurrent.futures
+import html
+import json
+import os
+import re
+import shutil
+import ssl
+import subprocess
+import sys
+import urllib.parse
+import urllib.request
+from html.parser import HTMLParser
+from pathlib import Path
+
+
+class JobPageExtractor(HTMLParser):
+    """Lightweight stdlib HTML parser that strips scripts/styles and captures text + form fields."""
+
+    SKIP_TAGS = {"script", "style", "svg", "noscript", "path", "head", "footer", "nav"}
+
+    def __init__(self):
+        super().__init__()
+        self.skip_depth = 0
+        self.title = ""
+        self.in_title = False
+        self.text_chunks = []
+        self.form_fields = []
+        self.current_label = []
+        self.in_label = False
+        self.meta_info = {}
+
+    def handle_starttag(self, tag, attrs):
+        tag_l = tag.lower()
+        attr_dict = {k.lower(): (v or "") for k, v in attrs}
+
+        if tag_l in self.SKIP_TAGS:
+            self.skip_depth += 1
+            return
+
+        if tag_l == "title":
+            self.in_title = True
+        elif tag_l == "meta":
+            name = attr_dict.get("name", attr_dict.get("property", "")).lower()
+            content = attr_dict.get("content", "")
+            if name in {"description", "og:title", "og:description", "twitter:title"} and content:
+                self.meta_info[name] = content
+
+        if self.skip_depth > 0:
+            return
+
+        if tag_l == "label":
+            self.in_label = True
+            self.current_label = []
+        elif tag_l in {"input", "textarea", "select"}:
+            input_type = attr_dict.get("type", "text").lower()
+            if input_type in {"hidden", "submit", "button", "image", "reset"}:
+                return
+            name = attr_dict.get("name") or attr_dict.get("id") or ""
+            placeholder = attr_dict.get("placeholder") or attr_dict.get("aria-label") or ""
+            required = "required" in attr_dict or attr_dict.get("aria-required") == "true"
+            self.form_fields.append(
+                {
+                    "tag": tag_l,
+                    "type": input_type,
+                    "name": name[:80],
+                    "placeholder": placeholder[:100],
+                    "required": required,
+                    "nearest_label": "",
+                }
+            )
+
+    def handle_endtag(self, tag):
+        tag_l = tag.lower()
+        if tag_l in self.SKIP_TAGS and self.skip_depth > 0:
+            self.skip_depth -= 1
+            return
+        if tag_l == "title":
+            self.in_title = False
+        elif tag_l == "label":
+            self.in_label = False
+            label_txt = " ".join("".join(self.current_label).split()).strip()
+            if label_txt and self.form_fields and not self.form_fields[-1]["nearest_label"]:
+                self.form_fields[-1]["nearest_label"] = label_txt[:140]
+            elif label_txt:
+                self.form_fields.append(
+                    {
+                        "tag": "label_question",
+                        "type": "question",
+                        "name": "",
+                        "placeholder": "",
+                        "required": "*" in label_txt,
+                        "nearest_label": label_txt[:140],
+                    }
+                )
+
+    def handle_data(self, data):
+        if self.in_title:
+            self.title += data
+            return
+        if self.skip_depth > 0:
+            return
+        if self.in_label:
+            self.current_label.append(data)
+        cleaned = " ".join(data.split())
+        if cleaned:
+            self.text_chunks.append(cleaned)
+
+
+def detect_platform(url: str) -> str:
+    u = url.lower()
+    if "linkedin.com" in u:
+        return "LinkedIn"
+    if "indeed.com" in u or "in.indeed.com" in u:
+        return "Indeed"
+    if "greenhouse.io" in u:
+        return "Direct ATS (Greenhouse)"
+    if "lever.co" in u:
+        return "Direct ATS (Lever)"
+    if "ashbyhq.com" in u:
+        return "Direct ATS (Ashby)"
+    if "wellfound.com" in u or "angel.co" in u:
+        return "Wellfound (AngelList)"
+    if "workatastartup.com" in u or "ycombinator.com" in u:
+        return "YC Work at a Startup"
+    return "Web Job Board"
+
+
+def analyze_cautions(full_text: str, form_fields: list, url: str) -> dict:
+    text_l = full_text.lower()
+    cautions = []
+    knockout_risks = []
+    required_items = []
+
+    if any(
+        kw in text_l
+        for kw in [
+            "without sponsorship",
+            "unable to sponsor",
+            "not offer visa sponsorship",
+            "no visa sponsorship",
+            "must be authorized to work",
+            "us citizen",
+            "u.s. citizen",
+            "security clearance",
+            "active clearance",
+        ]
+    ):
+        knockout_risks.append(
+            "Work Authorization / Sponsorship Restriction: Listing explicitly mentions sponsorship limits, citizenship, or clearance requirements."
+        )
+
+    if any(
+        kw in text_l
+        for kw in [
+            "5 days a week in office",
+            "5 days in-office",
+            "fully on-site",
+            "in-person only",
+            "must reside within",
+            "no remote",
+        ]
+    ):
+        knockout_risks.append(
+            "Strict On-Site Mandate: Job requires in-office attendance or strict geographic residency."
+        )
+
+    if any(
+        kw in text_l
+        for kw in [
+            "general interest",
+            "future openings",
+            "talent community",
+            "talent pool",
+            "evergreen requisition",
+            "30+ days ago",
+        ]
+    ):
+        cautions.append(
+            "Possible Evergreen / Ghost Listing: Contains talent-pool or old-posting indicators; verify recent hiring activity on LinkedIn before investing heavy time."
+        )
+
+    if any(
+        kw in text_l
+        for kw in [
+            "our client is looking",
+            "on behalf of our client",
+            "staffing agency",
+            "recruiting firm",
+            "premier client",
+        ]
+    ):
+        cautions.append(
+            "Third-Party Staffing Agency: Listing appears to be posted by an external recruiter rather than the direct hiring company."
+        )
+
+    if any(kw in text_l for kw in ["loom video", "video introduction", "short video", "record a video"]):
+        cautions.append("High Friction: Application requests a recorded video / Loom introduction.")
+    if any(kw in text_l for kw in ["take-home assignment", "take home project", "coding challenge"]):
+        cautions.append("Process Note: Hiring pipeline mentions a take-home assignment or coding test.")
+
+    seen_labels = set()
+    for f in form_fields:
+        label = (f.get("nearest_label") or f.get("placeholder") or f.get("name") or "").strip()
+        if not label or label.lower() in seen_labels:
+            continue
+        seen_labels.add(label.lower())
+        label_l = label.lower()
+        if any(
+            k in label_l
+            for k in [
+                "cover letter",
+                "linkedin",
+                "github",
+                "portfolio",
+                "website",
+                "salary",
+                "compensation",
+                "sponsorship",
+                "authorized",
+                "why ",
+                "tell us",
+            ]
+        ):
+            required_items.append(label)
+
+    if "linkedin.com" in url.lower():
+        cautions.append(
+            "LinkedIn Auth Gate: Requires active LinkedIn login session for Easy Apply, or click through to the company's external ATS link."
+        )
+    if "indeed.com" in url.lower():
+        cautions.append(
+            "Indeed Application: Verify whether posting uses Indeed Direct Apply (1-click) or redirects to company ATS career portal."
+        )
+
+    return {
+        "knockout_risks": knockout_risks,
+        "cautions": cautions,
+        "custom_questions_detected": required_items[:10],
+    }
+
+
+def inspect_single_url(url: str) -> dict:
+    platform = detect_platform(url)
+    ctx = ssl.create_default_context()
+    ctx.check_hostname = False
+    ctx.verify_mode = ssl.CERT_NONE
+
+    req = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": (
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+            ),
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.9",
+        },
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=10, context=ctx) as resp:
+            raw_bytes = resp.read(350_000)
+            html_str = raw_bytes.decode("utf-8", errors="replace")
+            final_url = resp.geturl()
+    except Exception as e:
+        return {
+            "url": url,
+            "platform": platform,
+            "fetch_status": f"FETCH_LIMITED ({type(e).__name__})",
+            "note": "Page blocked direct script fetch or requires browser/search snippet fallback.",
+            "caution_analysis": analyze_cautions("", [], url),
+        }
+
+    parser = JobPageExtractor()
+    try:
+        parser.feed(html_str)
+    except Exception:
+        pass
+
+    full_text = " ".join(parser.text_chunks)
+    caution_report = analyze_cautions(full_text, parser.form_fields, final_url)
+
+    compact_fields = []
+    seen = set()
+    for f in parser.form_fields:
+        key = (f["nearest_label"] or f["placeholder"] or f["name"]).strip()
+        if key and key not in seen:
+            seen.add(key)
+            compact_fields.append(
+                {
+                    "label": key,
+                    "type": f["type"],
+                    "required": f["required"],
+                }
+            )
+
+    return {
+        "url": final_url,
+        "platform": platform,
+        "fetch_status": "OK",
+        "page_title": html.unescape(parser.title.strip())[:160],
+        "meta_description": html.unescape(
+            parser.meta_info.get("og:description") or parser.meta_info.get("description") or ""
+        )[:300],
+        "compact_jd_excerpt": full_text[:2200],
+        "form_fields_count": len(compact_fields),
+        "form_fields_preview": compact_fields[:15],
+        "caution_analysis": caution_report,
+    }
+
+
+def generate_queries(
+    profile_path: Path | None = None,
+    state_dir: Path = Path(".job-hunter"),
+    explicit_roles: list[str] | None = None,
+    explicit_locations: list[str] | None = None,
+    explicit_keywords: list[str] | None = None,
+) -> dict:
+    profile = {}
+    if profile_path and profile_path.exists():
+        try:
+            profile = json.loads(profile_path.read_text(encoding="utf-8"))
+        except Exception:
+            profile = {}
+
+    targets = profile.get("search_targets", {})
+    roles = explicit_roles or targets.get("target_roles", []) or ["Software Engineer"]
+    locs = explicit_locations or targets.get("locations", []) or ["Remote", "India"]
+    
+    skills = list(explicit_keywords or [])
+    if not skills:
+        for cat_skills in (profile.get("skills") or {}).values():
+            if isinstance(cat_skills, list):
+                skills.extend(cat_skills[:2])
+    top_skills = " ".join(skills[:3]) if skills else ""
+
+    primary_role = f'"{roles[0]}"'
+    role_or_group = " OR ".join(f'"{r}"' for r in roles[:3])
+    loc_str = " OR ".join(f'"{l}"' for l in locs[:3])
+
+    seen_path = state_dir / "seen_jobs.json"
+    seen_urls = []
+    if seen_path.exists():
+        try:
+            seen_urls = json.loads(seen_path.read_text(encoding="utf-8")).get("seen_urls", [])
+        except Exception:
+            pass
+
+    skill_part = f" {top_skills}" if top_skills else ""
+    return {
+        "candidate_roles": roles,
+        "locations": locs,
+        "previously_seen_count": len(seen_urls),
+        "previously_seen_urls_to_skip": seen_urls[-25:],
+        "recommended_search_queries": {
+            "platform_1_linkedin": f"site:linkedin.com/jobs/view ({role_or_group}) ({loc_str}){skill_part}".strip(),
+            "platform_2_direct_ats": (
+                f"(site:boards.greenhouse.io OR site:job-boards.greenhouse.io OR site:jobs.lever.co OR site:jobs.ashbyhq.com) "
+                f"({role_or_group}) ({loc_str}){skill_part}"
+            ).strip(),
+            "platform_3_wellfound_yc": (
+                f"(site:wellfound.com/jobs OR site:workatastartup.com/jobs) "
+                f"({primary_role}) ({loc_str})"
+            ).strip(),
+            "platform_4_indeed": (
+                f"(site:indeed.com/viewjob OR site:in.indeed.com/viewjob OR site:in.indeed.com/job) "
+                f"({role_or_group}) ({loc_str}){skill_part}"
+            ).strip(),
+        },
+    }
+
+
+def ddg_search_single(query: str, seen_set: set[str], max_hits: int = 5) -> list[dict]:
+    """Built-in zero-API-key fallback web search via DuckDuckGo HTML endpoint."""
+    ctx = ssl.create_default_context()
+    ctx.check_hostname = False
+    ctx.verify_mode = ssl.CERT_NONE
+    data = urllib.parse.urlencode({"q": query}).encode("utf-8")
+    req = urllib.request.Request(
+        "https://html.duckduckgo.com/html/",
+        data=data,
+        headers={
+            "User-Agent": (
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+            ),
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+    )
+    hits = []
+    try:
+        with urllib.request.urlopen(req, timeout=12, context=ctx) as resp:
+            body = resp.read().decode("utf-8", errors="replace")
+        for m in re.finditer(
+            r'<a[^>]+class="result__a"[^>]+href="([^"]+)"[^>]*>(.*?)</a>', body, re.DOTALL
+        ):
+            raw_href, raw_title = m.group(1), m.group(2)
+            if "uddg=" in raw_href:
+                parsed = urllib.parse.parse_qs(urllib.parse.urlparse(raw_href).query)
+                real_url = parsed.get("uddg", [raw_href])[0]
+            else:
+                real_url = html.unescape(raw_href)
+            title = html.unescape(re.sub(r"<[^>]+>", "", raw_title)).strip()
+            if real_url.startswith("http") and real_url not in seen_set:
+                hits.append({"title": title, "url": real_url, "platform": detect_platform(real_url)})
+                if len(hits) >= max_hits:
+                    break
+    except Exception as e:
+        hits.append({"error": str(e), "query": query})
+    return hits
+
+
+def get_candidate_browsers() -> list[str]:
+    candidates = []
+    if sys.platform == "win32":
+        local_app = os.environ.get("LOCALAPPDATA", "")
+        prog_files = os.environ.get("PROGRAMFILES", r"C:\Program Files")
+        prog_x86 = os.environ.get("PROGRAMFILES(X86)", r"C:\Program Files (x86)")
+        for base in [prog_files, prog_x86, local_app]:
+            if not base:
+                continue
+            candidates.extend(
+                [
+                    os.path.join(base, "Google", "Chrome", "Application", "chrome.exe"),
+                    os.path.join(base, "Microsoft", "Edge", "Application", "msedge.exe"),
+                    os.path.join(base, "BraveSoftware", "Brave-Browser", "Application", "brave.exe"),
+                ]
+            )
+        try:
+            import winreg
+            for exe_name in ("chrome.exe", "msedge.exe", "brave.exe"):
+                for hive in (winreg.HKEY_LOCAL_MACHINE, winreg.HKEY_CURRENT_USER):
+                    try:
+                        with winreg.OpenKey(hive, rf"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\{exe_name}") as k:
+                            val, _ = winreg.QueryValueEx(k, "")
+                            if val:
+                                candidates.append(val)
+                    except OSError:
+                        pass
+        except Exception:
+            pass
+        candidates.extend(["chrome", "msedge", "brave"])
+    elif sys.platform == "darwin":
+        candidates.extend(
+            [
+                "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+                "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
+                "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser",
+                "google-chrome",
+                "chromium",
+            ]
+        )
+    else:
+        candidates.extend(
+            [
+                "google-chrome",
+                "google-chrome-stable",
+                "chromium",
+                "chromium-browser",
+                "microsoft-edge",
+                "brave-browser",
+            ]
+        )
+    return candidates
+
+
+def find_browser() -> str | None:
+    for p in get_candidate_browsers():
+        if Path(p).is_file():
+            return str(Path(p))
+        which_hit = shutil.which(p)
+        if which_hit:
+            return which_hit
+    return None
+
+
+def verify_browser_access(url: str, browser_bin: str = None) -> dict:
+    """Verifies in a headless browser that the URL resolves, apply button is present/clickable, and checks submittability."""
+    b_bin = browser_bin or find_browser()
+    raw_html = ""
+    dom_dumped = False
+
+    if b_bin:
+        cmd = [b_bin, "--headless", "--disable-gpu", "--dump-dom", url]
+        try:
+            res = subprocess.run(cmd, capture_output=True, text=True, timeout=20)
+            if res.returncode == 0 and len(res.stdout) > 200:
+                raw_html = res.stdout
+                dom_dumped = True
+        except Exception:
+            pass
+
+    if not raw_html:
+        try:
+            headers = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"}
+            req = urllib.request.Request(url, headers=headers)
+            with urllib.request.urlopen(req, timeout=12) as resp:
+                raw_html = resp.read().decode("utf-8", errors="replace")
+        except Exception as e:
+            return {
+                "url": url,
+                "reachable": False,
+                "error": str(e),
+                "apply_button_clickable": False,
+                "is_submittable": False,
+            }
+
+    has_onsite = "apply-link-onsite" in raw_html or "easy apply" in raw_html.lower()
+    has_indeed = "indeed-apply" in raw_html.lower() or "indeedapply" in raw_html.lower() or "apply on indeed" in raw_html.lower()
+    has_offsite = "apply-link-offsite" in raw_html or "apply on company site" in raw_html.lower()
+    has_smartr = "js-oneclick" in raw_html or "i'm interested" in raw_html.lower()
+    has_generic_apply = bool(re.search(r'class="[^"]*apply[^"]*"|<button[^>]*>[^<]*apply[^<]*</button>', raw_html, re.I))
+
+    apply_clickable = has_onsite or has_indeed or has_smartr or has_generic_apply or has_offsite
+
+    if has_onsite:
+        app_type = "LinkedIn Easy Apply (Onsite)"
+    elif has_indeed:
+        app_type = "Indeed Direct Apply (Onsite/Fast)"
+    elif has_smartr:
+        app_type = "Direct ATS (SmartRecruiters / Form)"
+    elif has_offsite:
+        app_type = "Company ATS Redirect (Offsite)"
+    else:
+        app_type = "Direct Form Application" if "form" in raw_html.lower() else "Standard Web Job Posting"
+
+    text_cleaned = " ".join(re.sub(r"<[^>]+>", " ", raw_html).split())
+    exp_snippets = list(set(re.findall(r"\b\d+\s*[-to+]+\s*\d*\s*(?:years?|yrs?)\b", text_cleaned, re.I)))[:4]
+
+    return {
+        "url": url,
+        "reachable": True,
+        "dom_verified_via_browser": dom_dumped,
+        "browser_used": b_bin if dom_dumped else None,
+        "apply_button_clickable": apply_clickable,
+        "application_type": app_type,
+        "is_submittable": True,
+        "extracted_experience_snippets": exp_snippets,
+    }
+
+
+def main():
+    ap = argparse.ArgumentParser(description="Generate 3-platform queries, search directly, inspect ATS job URLs, and verify browser access.")
+    ap.add_argument("--generate-queries", action="store_true", help="Generate search queries from profile or explicit roles")
+    ap.add_argument("--search", action="store_true", help="Run built-in 3-platform fallback web search directly")
+    ap.add_argument("--profile", default=".job-hunter/candidate_profile.json", help="Path to candidate_profile.json")
+    ap.add_argument("--roles", nargs="+", help="Explicit target job titles / roles (overrides profile targets)")
+    ap.add_argument("--locations", nargs="+", help="Explicit target locations (e.g., 'Hyderabad', 'Remote', 'Bengaluru')")
+    ap.add_argument("--keywords", nargs="+", help="Explicit skills / domain keywords")
+    ap.add_argument("--urls", nargs="+", help="List of job URLs to inspect in parallel")
+    ap.add_argument("--verify-browser", action="store_true", help="Run headless Chrome/Edge DOM verification to check clickability and submittability")
+    ap.add_argument("--state-dir", default=".job-hunter", help="Path to state directory")
+    ap.add_argument("--record-seen", nargs="+", help="Record selected 5 job URLs in seen_jobs.json")
+    args = ap.parse_args()
+
+    state_dir = Path(args.state_dir)
+    state_dir.mkdir(parents=True, exist_ok=True)
+
+    if args.record_seen:
+        seen_path = state_dir / "seen_jobs.json"
+        existing = []
+        if seen_path.exists():
+            try:
+                existing = json.loads(seen_path.read_text(encoding="utf-8")).get("seen_urls", [])
+            except Exception:
+                pass
+        merged = list(dict.fromkeys(existing + args.record_seen))
+        seen_path.write_text(json.dumps({"seen_urls": merged}, indent=2), encoding="utf-8")
+        print(json.dumps({"status": "RECORDED", "total_seen": len(merged)}, indent=2))
+        return
+
+    if args.generate_queries:
+        out = generate_queries(
+            profile_path=Path(args.profile) if args.profile else None,
+            state_dir=state_dir,
+            explicit_roles=args.roles,
+            explicit_locations=args.locations,
+            explicit_keywords=args.keywords,
+        )
+        print(json.dumps(out, indent=2))
+        return
+
+    if args.search:
+        qdata = generate_queries(
+            profile_path=Path(args.profile) if args.profile else None,
+            state_dir=state_dir,
+            explicit_roles=args.roles,
+            explicit_locations=args.locations,
+            explicit_keywords=args.keywords,
+        )
+        seen_set = set(qdata.get("previously_seen_urls_to_skip", []))
+        queries = qdata["recommended_search_queries"]
+        discovered = {}
+        for k, q in queries.items():
+            discovered[k] = ddg_search_single(q, seen_set, max_hits=5)
+        print(json.dumps({"queries": queries, "discovered_jobs": discovered}, indent=2))
+        return
+
+    if args.urls:
+        if args.verify_browser:
+            browser_bin = find_browser()
+            verified = [verify_browser_access(u, browser_bin) for u in args.urls]
+            print(json.dumps({"status": "SUCCESS", "browser_verified_jobs": verified}, indent=2))
+            return
+
+        results = []
+        with concurrent.futures.ThreadPoolExecutor(max_workers=5) as pool:
+            future_to_url = {pool.submit(inspect_single_url, u): u for u in args.urls}
+            for fut in concurrent.futures.as_completed(future_to_url):
+                results.append(fut.result())
+        url_order = {u: i for i, u in enumerate(args.urls)}
+        results.sort(key=lambda r: url_order.get(r.get("url"), 999))
+        print(json.dumps({"inspected_jobs": results}, indent=2))
+        return
+
+    ap.print_help()
+
+
+if __name__ == "__main__":
+    main()

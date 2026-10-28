@@ -1,0 +1,4 @@
+interface:
+  display_name: "Indian Film Crew Options"
+  short_description: "Compare two crew plans from your live technician sheet"
+  default_prompt: "Use $indian-film-crew-options to propose two crew options for my film using the current technician database."

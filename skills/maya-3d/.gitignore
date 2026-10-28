@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+.DS_Store
+maya_report.json
+sample-project/
+viewer/node_modules/
+viewer/dist/

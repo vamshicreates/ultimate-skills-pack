@@ -1,0 +1,40 @@
+/* Chitram Film: short-form caption + sticker styles (with engine/shortform-kit.js). Sizes are for
+   1080-wide frames; tokens come from the film's :root (--cap, --cap-on, --accent, --paper, --ink). */
+:root{ --cap:#FFFFFF; --cap-on:#FFFFFF; --accent:#E3B34A; --paper:#F7F1EC; --ink:#111216 }
+#caps{position:absolute;left:0;right:0;top:0;bottom:0;pointer-events:none}
+.sfcap{position:absolute;left:90px;right:90px;top:var(--cap-top,1300px);text-align:center;white-space:normal}
+.sfcap .w{display:inline-block;transition:none}
+.ch{display:inline-block;white-space:pre}
+
+/* clean: documentary / founder / thoughtful. Sentence case, calm, active word full white. */
+.sfcap.clean{font:600 66px/1.14 "Inter",sans-serif;letter-spacing:-.02em;color:var(--cap);
+  text-shadow:0 3px 14px rgba(0,0,0,.45),0 1px 2px rgba(0,0,0,.5)}
+.sfcap.clean .w{opacity:.62} .sfcap.clean .w.on{opacity:1} .sfcap.clean .w.em{color:var(--accent);opacity:1}
+
+/* bold: creator / high-energy education. Condensed caps, big, active word in the accent. */
+.sfcap.bold{font:400 104px/1.02 "Anton","Inter",sans-serif;text-transform:uppercase;letter-spacing:.01em;color:var(--cap);
+  -webkit-text-stroke:0;text-shadow:0 6px 0 rgba(0,0,0,.28),0 4px 20px rgba(0,0,0,.35)}
+.sfcap.bold .w.on{color:var(--accent);transform:scale(1.06)} .sfcap.bold .w.em{color:var(--accent)}
+
+/* serif: luxury / fashion / real estate / food. Italic serif, lowercase-friendly, no highlight jumps. */
+.sfcap.serif{font:italic 400 76px/1.1 "Instrument Serif","Cormorant Garamond",serif;letter-spacing:-.01em;color:var(--cap);
+  text-shadow:0 2px 16px rgba(0,0,0,.4)}
+.sfcap.serif .w{opacity:.7} .sfcap.serif .w.on{opacity:1} .sfcap.serif .w.em{color:var(--accent);opacity:1}
+
+/* label: editorial collage. Each page is a paper label; emphasis on an accent label. */
+.sfcap.label{left:70px;right:auto;text-align:left;font:400 62px/1.1 "Anton","Inter",sans-serif;text-transform:uppercase;
+  color:var(--ink);background:var(--paper);padding:10px 20px 8px;box-shadow:0 10px 22px rgba(0,0,0,.3)}
+.sfcap.label .w.em{color:var(--accent)}
+
+/* karaoke: pill behind the active word (tech / product / tutorial). */
+.sfcap.karaoke{font:700 70px/1.2 "Plus Jakarta Sans","Inter",sans-serif;letter-spacing:-.02em;color:var(--cap);
+  text-shadow:0 3px 12px rgba(0,0,0,.4)}
+.sfcap.karaoke .w{padding:2px 14px;border-radius:18px}
+.sfcap.karaoke .w.on{background:var(--accent);color:var(--ink);text-shadow:none}
+.sfcap.karaoke .w.em{color:var(--accent)} .sfcap.karaoke .w.em.on{color:var(--ink)}
+
+/* sticker labels (hand-placed emphasis stacks) */
+.lab{position:absolute;font:400 58px/1.12 "Anton",sans-serif;color:var(--ink);background:var(--paper);padding:9px 18px 7px;
+  text-transform:uppercase;white-space:nowrap;letter-spacing:.012em;box-shadow:0 10px 22px rgba(10,6,40,.32);transform-origin:0 50%}
+.lab.em{font-size:100px;background:var(--brand,#5B4FDB);color:var(--accent);padding:10px 22px 8px}
+.lab .keep{text-transform:none}   /* brand casing inside caps: NRI<span class="keep">s</span> */

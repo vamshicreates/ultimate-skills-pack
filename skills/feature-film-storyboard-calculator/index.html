@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Storyboard Cost Calculator — Feature Film Planner</title>
+<meta name="description" content="Estimate storyboard credits and costs for your feature film, including image retries and screenplay formatting.">
+<style>
+:root{color-scheme:dark;--bg:#111;--panel:#191919;--panel2:#222;--line:#343434;--muted:#a1a1a1;--text:#f7f7f7;--red:#ff4a4a;--red2:#ff6868;--green:#b7f3c8}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -20%,#292020 0,transparent 55%),var(--bg);color:var(--text);font:16px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.wrap{width:min(1120px,calc(100% - 32px));margin:auto;padding:44px 0 64px}.eyebrow{color:var(--red2);font-weight:750;text-transform:uppercase;letter-spacing:.14em;font-size:.76rem}
+header{max-width:760px;margin-bottom:28px}h1{font-size:clamp(2.1rem,5vw,4rem);line-height:1.04;letter-spacing:-.055em;margin:12px 0 16px}h2{font-size:1.15rem;margin:0 0 16px;letter-spacing:-.02em}p{color:#c6c6c6;margin:0}.sub{font-size:1.08rem;max-width:700px}.tagrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}.tag{border:1px solid var(--line);border-radius:999px;padding:6px 10px;color:#ccc;font-size:.82rem}
+.layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(320px,.9fr);gap:18px;align-items:start}.panel{border:1px solid var(--line);border-radius:22px;background:linear-gradient(160deg,#1c1c1c,#151515);padding:24px;box-shadow:0 12px 36px #0002}.section{padding:0 0 22px;margin-bottom:22px;border-bottom:1px solid #303030}.section:last-child{padding:0;margin:0;border:0}.headrow{display:flex;justify-content:space-between;gap:12px;align-items:center}.bigval{font-size:1.8rem;font-weight:800;letter-spacing:-.04em;font-variant-numeric:tabular-nums}.range{width:100%;accent-color:var(--red);margin:18px 0 8px;cursor:pointer}.marks{display:flex;justify-content:space-between;color:#777;font-size:.75rem}.hint{font-size:.85rem;color:var(--muted);margin-top:8px}.options{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.option{position:relative}.option input{position:absolute;opacity:0;pointer-events:none}.option label{display:block;border:1px solid #3a3a3a;background:#202020;border-radius:13px;padding:13px 10px;cursor:pointer;text-align:center;height:100%}.option strong{display:block;font-size:1rem}.option span{display:block;font-size:.78rem;color:var(--muted);margin-top:4px}.option input:checked+label{border-color:var(--red);background:#321d1d;box-shadow:inset 0 0 0 1px var(--red)}.option input:focus-visible+label{outline:3px solid #fff;outline-offset:3px}
+.checkrow{display:flex;align-items:flex-start;gap:12px;cursor:pointer}.checkrow input{accent-color:var(--red);width:18px;height:18px;margin-top:4px}.wordbox{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#222;border-radius:12px;padding:12px 14px;margin-top:14px}.wordbox input{width:120px;max-width:45%;background:#111;border:1px solid #444;color:white;border-radius:8px;padding:9px;font:inherit;text-align:right}
+.billing{display:flex;gap:8px;background:#101010;padding:5px;border-radius:12px}.billing button{flex:1;border:0;border-radius:9px;padding:10px 8px;color:#aaa;background:transparent;cursor:pointer;font:inherit}.billing button[aria-pressed=true]{background:#333;color:white}
+.results{position:sticky;top:18px}.total-label{color:var(--muted);font-size:.9rem}.total-price{font-size:clamp(2.7rem,5vw,4rem);font-weight:850;letter-spacing:-.065em;line-height:1.1;margin:5px 0}.planline{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}.pill{font-size:.74rem;font-weight:800;color:var(--green);border:1px solid #315a3d;background:#183021;border-radius:999px;padding:5px 9px}.muted{color:var(--muted);font-size:.87rem}.metrics{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:22px 0}.metric{padding:14px;border:1px solid #333;background:#202020;border-radius:13px}.metric small{display:block;color:var(--muted);font-size:.8rem}.metric strong{display:block;font-size:1.4rem;letter-spacing:-.03em;margin-top:4px;font-variant-numeric:tabular-nums}.breakdown{border-top:1px solid #333;margin-top:18px;padding-top:12px}.lineitem{display:flex;justify-content:space-between;gap:16px;padding:7px 0;color:#c8c8c8;font-size:.92rem}.lineitem strong{color:white;text-align:right;font-variant-numeric:tabular-nums}.compare{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.plan{border:1px solid #393939;border-radius:14px;padding:13px;background:#1b1b1b}.plan.best{border-color:var(--red);background:#2a1b1b}.plan h3{margin:0;font-size:.95rem}.plan .cost{font-size:1.35rem;font-weight:800;margin:7px 0 2px}.plan p{font-size:.78rem;color:#aaa}.btn{border:0;border-radius:12px;background:var(--red);color:#fff;font-weight:800;font-size:.95rem;padding:13px 16px;width:100%;cursor:pointer;margin-top:16px}.btn:hover{background:var(--red2)}.fineprint{font-size:.78rem;color:#888;margin-top:14px}.assumptions{margin-top:18px}.assumptions summary{cursor:pointer;color:#ddd;font-weight:650}.assumptions ul{padding-left:20px;color:#aaa;font-size:.85rem}.footer{margin-top:18px;color:#777;font-size:.78rem;text-align:center}
+@media(max-width:800px){.wrap{padding-top:28px}.layout{grid-template-columns:1fr}.results{position:static}.panel{padding:19px}.total-price{font-size:3.2rem}}
+@media(max-width:420px){.options{gap:5px}.option label{padding:11px 5px}.option span{font-size:.7rem}.compare{grid-template-columns:1fr 1fr}.panel{border-radius:17px}}
+</style>
+</head>
+<body>
+<main class="wrap">
+<header>
+  <div class="eyebrow">For screenwriters · directors · filmmakers</div>
+  <h1>What will it cost to storyboard your film?</h1>
+  <p class="sub">Plan your full feature-film storyboard before you spend a credit. Adjust your scene count, choose how many image attempts you want, and include screenplay formatting to see a transparent cost estimate.</p>
+  <div class="tagrow"><span class="tag">15 credits per image</span><span class="tag">1–3 attempts per scene</span><span class="tag">Live estimate</span></div>
+</header>
+<div class="layout">
+<section class="panel" aria-label="Calculator inputs">
+  <div class="section">
+    <h2>01 / Your screenplay</h2>
+    <div class="headrow"><label for="scenes">Number of scenes</label><output class="bigval" id="sceneValue" for="scenes">80</output></div>
+    <input class="range" id="scenes" type="range" min="10" max="180" step="5" value="80">
+    <div class="marks"><span>10 scenes</span><span>Typical film: 70–120</span><span>180 scenes</span></div>
+    <p class="hint">A 170-minute feature can vary widely by genre and pacing. Start with your actual screenplay scene count whenever possible.</p>
+  </div>
+  <div class="section">
+    <h2>02 / Storyboard attempts per scene</h2>
+    <p class="hint" style="margin:0 0 14px">Choose how many images you plan to generate for each scene.</p>
+    <div class="options">
+      <div class="option"><input type="radio" name="attempts" id="a1" value="1"><label for="a1"><strong>1×</strong><span>First attempt</span></label></div>
+      <div class="option"><input type="radio" name="attempts" id="a2" value="2" checked><label for="a2"><strong>2×</strong><span>One retry</span></label></div>
+      <div class="option"><input type="radio" name="attempts" id="a3" value="3"><label for="a3"><strong>3×</strong><span>Max attempts</span></label></div>
+    </div>
+    <p class="hint">This counts total generations per scene. For example, 2× means two images total, not the first image plus two retries.</p>
+  </div>
+  <div class="section">
+    <h2>03 / Screenplay formatter</h2>
+    <label class="checkrow"><input type="checkbox" id="formatter" checked><span><strong>Include one full screenplay-formatting pass</strong><br><span class="muted">Uses 1 credit per 250 words processed.</span></span></label>
+    <div class="wordbox"><div><strong>Estimated word count</strong><div class="muted">Default: 34,000 words</div></div><input id="words" type="number" min="0" max="250000" step="500" value="34000" aria-label="Screenplay word count"></div>
+    <p class="hint">A planning estimate for a 170-minute script is around 170 pages and 34,000 words, including dialogue and description. Actual scripts vary.</p>
+  </div>
+  <div class="section">
+    <h2>04 / Pricing period</h2>
+    <div class="billing" role="group" aria-label="Subscription price period">
+      <button id="firstBtn" type="button" aria-pressed="true">First month</button>
+      <button id="renewBtn" type="button" aria-pressed="false">Renewal price</button>
+    </div>
+    <p class="hint" id="billingHint">Base ₹499 · Pro ₹899 for the first month. Top-ups cost ₹1,500 per 500 credits.</p>
+  </div>
+</section>
+<aside class="panel results" aria-live="polite" aria-label="Estimated project cost">
+  <div class="planline"><span class="total-label">Estimated lowest total spend</span><span class="pill" id="recommended">BASE PLAN</span></div>
+  <div class="total-price" id="bestCost">₹2,995</div>
+  <p class="muted" id="bestDescription">Subscription plus required credit top-ups</p>
+  <div class="metrics">
+    <div class="metric"><small>Total credits needed</small><strong id="totalCredits">2,536</strong></div>
+    <div class="metric"><small>Storyboard images</small><strong id="imageCount">160</strong></div>
+    <div class="metric"><small>500-credit top-ups</small><strong id="topupCount">2</strong></div>
+    <div class="metric"><small>Credits left after use</small><strong id="leftover">464</strong></div>
+  </div>
+  <div class="breakdown">
+    <div class="lineitem"><span>Storyboard generation</span><strong id="storyboardCost">2,400 credits</strong></div>
+    <div class="lineitem"><span>Screenplay formatting</span><strong id="formatCost">136 credits</strong></div>
+    <div class="lineitem"><span>Subscription credits</span><strong id="planCredits">1,000 credits</strong></div>
+    <div class="lineitem"><span>Top-up credits</span><strong id="topupCredits">2,000 credits</strong></div>
+  </div>
+  <div class="compare">
+    <div class="plan" id="basePlan"><h3>Base</h3><div class="cost" id="baseCost">₹4,999</div><p id="baseDetail">500 plan credits + top-ups</p></div>
+    <div class="plan" id="proPlan"><h3>Pro</h3><div class="cost" id="proCost">₹3,899</div><p id="proDetail">1,000 plan credits + top-ups</p></div>
+  </div>
+  <button class="btn" id="copyBtn" type="button">Copy my estimate ↗</button>
+  <p class="fineprint">Estimate only. Excludes taxes and payment fees. Actual usage depends on how many words are processed and how often you regenerate images.</p>
+  <details class="assumptions"><summary>How is this calculated?</summary><ul>
+    <li>Each storyboard image costs 15 credits.</li>
+    <li>Storyboard credits = scenes × attempts per scene × 15.</li>
+    <li>Formatting credits = rounded-up word count ÷ 250.</li>
+    <li>Base includes 500 credits; Pro includes 1,000 credits.</li>
+    <li>Each top-up adds 500 credits for ₹1,500. Top-ups are used after plan credits and do not expire.</li>
+    <li>Costs compare one subscription month plus enough top-ups to cover the project.</li>
+    <li>Plan limits on shots per scene are separate from this simplified 1–3 image-attempt estimate.</li>
+  </ul></details>
+</aside>
+</div>
+<div class="footer">A transparent planning tool for your next production. Pricing values are demo configuration and can be updated centrally in the JavaScript.</div>
+</main>
+<script>
+/* Centralized pricing config: update here when product pricing changes. */
+const CONFIG = {
+  storyboardCreditsPerImage: 15,
+  textCreditsPer250Words: 1,
+  topUpCredits: 500,
+  topUpPriceINR: 1500,
+  plans: {
+    base: { name: "Base", credits: 500, firstMonth: 499, renewal: 599 },
+    pro: { name: "Pro", credits: 1000, firstMonth: 899, renewal: 999 }
+  }
+};
+const $ = id => document.getElementById(id);
+const inr = n => "₹" + Math.round(n).toLocaleString("en-IN");
+let billingPeriod = "firstMonth";
+function calcPlan(plan) {
+  const sub = plan[billingPeriod];
+  const topUps = Math.ceil(Math.max(0, state.totalCredits - plan.credits) / CONFIG.topUpCredits);
+  const available = plan.credits + topUps * CONFIG.topUpCredits;
+  return { name: plan.name, subscription: sub, topUps, available, leftover: available - state.totalCredits,
+    total: sub + topUps * CONFIG.topUpPriceINR, planCredits: plan.credits, topUpCredits: topUps * CONFIG.topUpCredits };
+}
+let state = {};
+function update() {
+  const scenes = Number($("scenes").value);
+  const attempts = Number(document.querySelector('input[name="attempts"]:checked').value);
+  const words = Math.max(0, Math.min(250000, Number($("words").value) || 0));
+  const includeFormatter = $("formatter").checked;
+  const images = scenes * attempts;
+  const storyboardCredits = images * CONFIG.storyboardCreditsPerImage;
+  const formatterCredits = includeFormatter ? Math.ceil(words / 250) * CONFIG.textCreditsPer250Words : 0;
+  state = { scenes, attempts, words, includeFormatter, images, storyboardCredits, formatterCredits, totalCredits: storyboardCredits + formatterCredits };
+  const base = calcPlan(CONFIG.plans.base), pro = calcPlan(CONFIG.plans.pro);
+  const best = base.total <= pro.total ? base : pro;
+  $("sceneValue").textContent = scenes;
+  $("bestCost").textContent = inr(best.total);
+  $("recommended").textContent = best.name.toUpperCase() + " PLAN";
+  $("bestDescription").textContent = `${billingPeriod === "firstMonth" ? "First-month" : "Renewal"} subscription + ${best.topUps} top-up${best.topUps === 1 ? "" : "s"}`;
+  $("totalCredits").textContent = state.totalCredits.toLocaleString("en-IN");
+  $("imageCount").textContent = images.toLocaleString("en-IN");
+  $("topupCount").textContent = best.topUps;
+  $("leftover").textContent = best.leftover.toLocaleString("en-IN");
+  $("storyboardCost").textContent = storyboardCredits.toLocaleString("en-IN") + " credits";
+  $("formatCost").textContent = formatterCredits.toLocaleString("en-IN") + " credits";
+  $("planCredits").textContent = best.planCredits.toLocaleString("en-IN") + " credits";
+  $("topupCredits").textContent = best.topUpCredits.toLocaleString("en-IN") + " credits";
+  $("baseCost").textContent = inr(base.total);
+  $("proCost").textContent = inr(pro.total);
+  $("baseDetail").textContent = `${inr(base.subscription)} subscription + ${base.topUps} top-up${base.topUps === 1 ? "" : "s"} · ${base.leftover.toLocaleString("en-IN")} credits left`;
+  $("proDetail").textContent = `${inr(pro.subscription)} subscription + ${pro.topUps} top-up${pro.topUps === 1 ? "" : "s"} · ${pro.leftover.toLocaleString("en-IN")} credits left`;
+  $("basePlan").classList.toggle("best", best.name === "Base");
+  $("proPlan").classList.toggle("best", best.name === "Pro");
+  $("billingHint").textContent = billingPeriod === "firstMonth"
+    ? "Base ₹499 · Pro ₹899 for the first month. Top-ups cost ₹1,500 per 500 credits."
+    : "Base ₹599 · Pro ₹999 at renewal. Top-ups cost ₹1,500 per 500 credits.";
+}
+$("scenes").addEventListener("input", update);
+document.querySelectorAll('input[name="attempts"]').forEach(el => el.addEventListener("change", update));
+$("formatter").addEventListener("change", update);
+$("words").addEventListener("input", update);
+$("firstBtn").addEventListener("click", () => { billingPeriod = "firstMonth"; $("firstBtn").setAttribute("aria-pressed","true"); $("renewBtn").setAttribute("aria-pressed","false"); update(); });
+$("renewBtn").addEventListener("click", () => { billingPeriod = "renewal"; $("renewBtn").setAttribute("aria-pressed","true"); $("firstBtn").setAttribute("aria-pressed","false"); update(); });
+$("copyBtn").addEventListener("click", async () => {
+  const base = calcPlan(CONFIG.plans.base), pro = calcPlan(CONFIG.plans.pro), best = base.total <= pro.total ? base : pro;
+  const summary = [
+    "Feature Film Storyboard Cost Estimate",
+    `Scenes: ${state.scenes}`,
+    `Attempts per scene: ${state.attempts}`,
+    `Storyboard images: ${state.images}`,
+    `Storyboard credits: ${state.storyboardCredits}`,
+    `Screenplay formatting: ${state.formatterCredits} credits`,
+    `Total credits: ${state.totalCredits}`,
+    `Pricing: ${billingPeriod === "firstMonth" ? "first month" : "renewal"}`,
+    `Recommended option: ${best.name}`,
+    `Estimated total: ${inr(best.total)}`,
+    `Top-ups: ${best.topUps} x ${CONFIG.topUpCredits} credits`,
+    `Remaining credits: ${best.leftover}`
+  ].join("\\n");
+  try {
+    await navigator.clipboard.writeText(summary);
+    $("copyBtn").textContent = "Estimate copied ✓";
+    setTimeout(() => $("copyBtn").textContent = "Copy my estimate ↗", 1800);
+  } catch {
+    window.prompt("Copy your estimate:", summary);
+  }
+});
+update();
+</script>
+</body>
+</html>

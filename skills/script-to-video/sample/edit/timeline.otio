@@ -1,0 +1,93 @@
+{
+  "OTIO_SCHEMA": "Timeline.1",
+  "name": "Script to Video Sample",
+  "global_start_time": {
+    "OTIO_SCHEMA": "RationalTime.1",
+    "value": 0,
+    "rate": 25
+  },
+  "tracks": {
+    "OTIO_SCHEMA": "Stack.1",
+    "name": "tracks",
+    "children": [
+      {
+        "OTIO_SCHEMA": "Track.1",
+        "name": "Storyboard picture",
+        "kind": "Video",
+        "children": [
+          {
+            "OTIO_SCHEMA": "Clip.2",
+            "name": "S001-SH001",
+            "metadata": {
+              "camera": "Static color card for pipeline test"
+            },
+            "source_range": {
+              "OTIO_SCHEMA": "TimeRange.1",
+              "start_time": {
+                "OTIO_SCHEMA": "RationalTime.1",
+                "value": 0,
+                "rate": 25
+              },
+              "duration": {
+                "OTIO_SCHEMA": "RationalTime.1",
+                "value": 80,
+                "rate": 25
+              }
+            },
+            "media_reference": {
+              "OTIO_SCHEMA": "ExternalReference.1",
+              "target_url": "file:///Users/rachanalekkala/Documents/VamshiCreates/Skills/script-to-video/sample/edit/picture/S001-SH001.mp4"
+            }
+          }
+        ]
+      },
+      {
+        "OTIO_SCHEMA": "Track.1",
+        "name": "Dialogue - Narrator",
+        "kind": "Audio",
+        "children": [
+          {
+            "OTIO_SCHEMA": "Gap.1",
+            "source_range": {
+              "OTIO_SCHEMA": "TimeRange.1",
+              "start_time": {
+                "OTIO_SCHEMA": "RationalTime.1",
+                "value": 0,
+                "rate": 25
+              },
+              "duration": {
+                "OTIO_SCHEMA": "RationalTime.1",
+                "value": 8,
+                "rate": 25
+              }
+            }
+          },
+          {
+            "OTIO_SCHEMA": "Clip.2",
+            "name": "S001-D001",
+            "metadata": {
+              "character": "Narrator"
+            },
+            "source_range": {
+              "OTIO_SCHEMA": "TimeRange.1",
+              "start_time": {
+                "OTIO_SCHEMA": "RationalTime.1",
+                "value": 0,
+                "rate": 25
+              },
+              "duration": {
+                "OTIO_SCHEMA": "RationalTime.1",
+                "value": 55,
+                "rate": 25
+              }
+            },
+            "media_reference": {
+              "OTIO_SCHEMA": "ExternalReference.1",
+              "target_url": "file:///Users/rachanalekkala/Documents/VamshiCreates/Skills/script-to-video/sample/voices/S001-D001.wav"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

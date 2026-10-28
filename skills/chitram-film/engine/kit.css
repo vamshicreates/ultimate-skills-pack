@@ -1,0 +1,81 @@
+/* Chitram Film kit styles. Load after fonts.css. Everything here is used by motion-kit.js. */
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{margin:0;overflow:hidden;background:#000}
+[data-film]{position:relative;overflow:hidden;-webkit-font-smoothing:antialiased;text-rendering:geometricPrecision}
+.layer{position:absolute;inset:0;pointer-events:none}
+.center{display:flex;align-items:center;justify-content:center}
+.t{position:absolute;opacity:0;white-space:normal}
+.ln{display:block}
+.nowrap{white-space:nowrap}
+
+/* light sweep overlay created by MK.blurIn / MK.sweep */
+.mk-sweep{position:absolute;inset:0;color:transparent !important;-webkit-text-fill-color:transparent;-webkit-background-clip:text;background-clip:text;
+  background-size:300% 100%;background-repeat:no-repeat;pointer-events:none;text-shadow:none !important;
+  background-image:linear-gradient(100deg,rgba(255,255,255,0) 40%,var(--mk-sweep,rgba(255,255,255,.95)) 50%,rgba(255,255,255,0) 60%)}
+.mk-sweep *{color:transparent !important;-webkit-text-fill-color:transparent}
+
+/* block wipe / highlight */
+.mk-cover{position:absolute;inset:-0.06em -0.12em;transform-origin:0 50%;z-index:2;pointer-events:none}
+.mk-hl{position:absolute;inset:0.08em -0.14em 0.02em;z-index:-1;border-radius:.14em;transform-origin:0 50%}
+.mk-hlwrap{position:relative;display:inline-block;isolation:isolate}
+.mk-mask{display:block;overflow:hidden;padding-bottom:.08em}
+.mk-mask>.mk-in{display:block}
+.mk-word{display:inline-block;white-space:pre}
+.mk-wordmask{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.1em}
+.mk-char{display:none}
+.mk-caret{display:inline-block;width:.06em;height:.9em;margin-left:.04em;vertical-align:-.08em;background:currentColor}
+.mk-kpill{position:absolute;left:0;top:0;display:block;z-index:-1;border-radius:.22em;pointer-events:none}
+.mk-karaoke{position:relative;isolation:isolate}
+.mk-glitch{position:absolute;inset:0;pointer-events:none;opacity:0}
+
+/* shapes */
+.mk-bokeh{position:absolute;border-radius:50%;pointer-events:none}
+.mk-streak{position:absolute;left:0;border-radius:40px;pointer-events:none}
+.mk-blob{position:absolute;border-radius:48%;pointer-events:none}
+.mk-arc{position:absolute;left:50%;top:50%;width:0;height:0}
+.mk-arc>span{position:absolute;left:0;top:0;transform-origin:0 0;white-space:pre}
+.mk-bandhost{position:absolute;left:50%;top:50%;width:0;height:0;transform-style:preserve-3d}
+.mk-band{position:absolute;left:0;top:0;width:0;height:0;transform-style:preserve-3d}
+.mk-band>.mk-face{position:absolute;display:flex;align-items:center;justify-content:center;backface-visibility:hidden;white-space:nowrap}
+.mk-wall{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
+.mk-wall>.mk-row{white-space:nowrap;line-height:1}
+
+/* glass & aluminium surfaces */
+.glass{background:linear-gradient(135deg,rgba(255,255,255,.72),rgba(236,236,242,.52) 45%,rgba(214,216,224,.62));
+  border:1px solid rgba(255,255,255,.9);box-shadow:0 26px 60px rgba(40,30,30,.18),inset 0 1px 0 rgba(255,255,255,.95);border-radius:18px}
+.glass-dark{background:linear-gradient(160deg,rgba(28,30,36,.82),rgba(14,15,19,.9));border:1px solid rgba(255,255,255,.08);
+  box-shadow:0 30px 70px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.06);border-radius:18px}
+.brushed{background-image:repeating-linear-gradient(90deg,rgba(255,255,255,0) 0 2px,rgba(150,152,160,.14) 2px 3px),linear-gradient(135deg,#eef0f3,#c9ccd2 55%,#e2e4e8)}
+
+/* ---------------- CSS 3D laptop (MK.laptop) ---------------- */
+.mk-stage{position:absolute;inset:0;perspective:2300px;perspective-origin:50% 56%}
+.mk-rig,.mk-bob{position:absolute;left:50%;top:50%;width:0;height:0;transform-style:preserve-3d}
+.mk-floor{position:absolute;left:-1000px;top:0;width:2000px;height:1500px;transform-origin:50% 0;transform:translate3d(0,190px,-300px) rotateX(90deg);
+  background:radial-gradient(38% 30% at 50% 48%,var(--mk-shadow,rgba(112,72,62,.50)) 0%,rgba(0,0,0,0) 100%)}
+.mk-lid{position:absolute;transform-origin:50% 100%;transform-style:preserve-3d}
+.mk-lidback{position:absolute;inset:0;border-radius:30px;transform:translateZ(-3px) rotateY(180deg);backface-visibility:hidden;background:linear-gradient(135deg,#e9eaee,#c4c6cc 50%,#dcdde2)}
+.mk-rim{position:absolute;inset:0;border-radius:30px;background:linear-gradient(160deg,#f1f2f5 0%,#b9bcc3 35%,#8d9098 60%,#d7d9de 100%);box-shadow:0 0 0 1px rgba(0,0,0,.18)}
+.mk-bezel{position:absolute;inset:3px;border-radius:27px;background:#050506}
+.mk-cam{position:absolute;left:50%;top:8px;width:6px;height:6px;margin-left:-3px;border-radius:50%;background:#1d1f26;box-shadow:0 0 0 1px #2a2c33}
+.mk-screen{position:absolute;overflow:hidden;border-radius:6px;background:#0B0B0E}
+.mk-screen>.scr{position:absolute;inset:0}
+.mk-screen img{display:block;width:100%;height:100%}
+.mk-gloss{position:absolute;overflow:hidden;border-radius:6px;pointer-events:none}
+.mk-glossbar{position:absolute;top:-200px;left:0;width:420px;height:1200px;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.10) 45%,rgba(255,255,255,.16) 50%,rgba(255,255,255,.10) 55%,rgba(255,255,255,0))}
+.mk-sheen{position:absolute;border-radius:6px;pointer-events:none;background:linear-gradient(125deg,rgba(255,255,255,.07),rgba(255,255,255,0) 32%)}
+.mk-lifts{position:absolute;transform-style:preserve-3d}
+.mk-base{position:absolute;transform-origin:50% 0;transform-style:preserve-3d;border-radius:0 0 34px 34px;background:linear-gradient(180deg,#b9bbc1,#d4d6db 8%,#dcdee2 40%,#cfd1d6)}
+.mk-kb{position:absolute;border-radius:12px;background:#9fa2a9;box-shadow:inset 0 2px 6px rgba(0,0,0,.25);padding:10px;display:flex;flex-direction:column;gap:8px}
+.mk-kr{display:flex;gap:8px;flex:1}
+.mk-k{flex:1;border-radius:7px;background:linear-gradient(180deg,#26272c,#141518);box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 1px 1px rgba(0,0,0,.4)}
+.mk-spk{position:absolute;width:92px;border-radius:8px;background-image:radial-gradient(circle,#8c8f96 1.4px,rgba(0,0,0,0) 1.8px);background-size:9px 9px;opacity:.8}
+.mk-pad{position:absolute;border-radius:18px;background:linear-gradient(180deg,#cfd1d6,#c5c7cc);box-shadow:inset 0 0 0 1.5px rgba(0,0,0,.12)}
+.mk-front{position:absolute;left:0;height:22px;transform-origin:50% 0;transform:rotateX(-90deg);border-radius:0 0 12px 12px;background:linear-gradient(180deg,#e6e7ea,#a4a7ae 60%,#7f828a)}
+.mk-side{position:absolute;top:0;width:22px;background:linear-gradient(90deg,#8e9199,#c9cbd0)}
+
+/* ---------------- CSS 3D phone (MK.phone) ---------------- */
+.mk-phone{position:absolute;transform-style:preserve-3d}
+.mk-phone-body{position:absolute;inset:0;border-radius:var(--r,64px);background:linear-gradient(145deg,#3a3c42,#16171b 45%,#2b2d32);box-shadow:0 0 0 2px #55585f,0 40px 90px rgba(0,0,0,.35)}
+.mk-phone-screen{position:absolute;overflow:hidden;background:#000}
+.mk-phone-island{position:absolute;left:50%;top:18px;width:120px;height:34px;margin-left:-60px;border-radius:20px;background:#000;z-index:5}
+.mk-phone-back{position:absolute;inset:0;border-radius:var(--r,64px);transform:translateZ(-14px) rotateY(180deg);backface-visibility:hidden;background:linear-gradient(145deg,#d9dbe0,#a9acb3)}

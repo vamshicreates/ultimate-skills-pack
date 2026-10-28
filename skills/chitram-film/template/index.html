@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Film</title>
+<link rel="stylesheet" href="engine/fonts.css" />
+<link rel="stylesheet" href="engine/kit.css" />
+<script src="engine/vendor/gsap.min.js"></script>
+<style>
+/* ============ DESIGN TOKENS (fill from the brief's VISUAL SYSTEM) ============ */
+:root{
+  --bg:#0B0B0E; --bg2:#F7F1EC;           /* dark void / light studio */
+  --ink:#1A1A1A; --paper:#FFFFFF;        /* text on light / text on dark */
+  --accent:#E3B34A; --accent2:#7B6CF6;   /* brand accents */
+  --serif:"Cormorant Garamond",serif; --sans:"Inter",sans-serif;
+}
+#film{background:var(--bg);font-family:var(--sans)}
+.serif{font-family:var(--serif);font-weight:500;letter-spacing:-.012em}
+.h-xl{font-size:118px;line-height:1.04}
+.h-l{font-size:92px;line-height:1.05}
+.h-m{font-size:68px;line-height:1.08}
+.cap{font:500 26px/1.2 var(--sans);letter-spacing:.14em}
+.on-dark{color:var(--paper)} .on-light{color:var(--ink)}
+/* ============ SCENE STYLES ============ */
+#bgDark{background:radial-gradient(50% 55% at 50% 50%,rgba(123,108,246,.22),rgba(11,11,14,0) 70%),linear-gradient(180deg,#101015,#0B0B0E 55%,#070709)}
+#bgLight{background:linear-gradient(180deg,#F7F1EC 0%,#F4ECE6 48%,#E6D3CB 78%,#CDB3AA 100%);opacity:0}
+</style>
+</head>
+<body>
+<!-- ROOT: duration / fps / size / audio are the single source of truth for the renderer -->
+<div id="film" data-film data-duration="{{DURATION}}" data-fps="{{FPS}}" data-width="{{W}}" data-height="{{H}}" data-audio="assets/score.wav">
+
+  <!-- LAYER ORDER (bottom -> top): backgrounds, ambience, stage (3D/device), scene layers, typography, transitions -->
+  <div id="bgDark" class="layer"></div>
+  <div id="bgLight" class="layer"></div>
+  <div id="ambience" class="layer"></div>
+  <div id="stage" class="layer"></div>
+
+  <!-- SCENE 1 -->
+  <div id="s1" class="layer center">
+    <div class="t serif on-dark h-xl" id="s1_head" style="position:relative">your headline here.</div>
+  </div>
+
+  <div id="fx" class="layer"></div>
+</div>
+
+<script src="engine/runtime.js"></script>
+<script src="engine/motion-kit.js"></script>
+<script>
+Film.build((tl) => {
+  const E = "power3.out", IO = "power2.inOut", S = "sine.inOut";
+
+  // ---- build-time DOM (devices, bokeh, shapes) ----
+  const bokeh = MK.bokeh("#ambience", { count: 5, seed: 4 });
+  MK.drift(tl, bokeh, 0, Film.cfg.duration);
+
+  // ---- SCENE 1 | 00:00–00:04 ----
+  MK.blurIn(tl, "#s1_head", 0.5, { dur: 1.1 });
+  MK.blurOut(tl, "#s1_head", 3.4);
+
+  // ---- SCENE 2 | ... ----
+});
+</script>
+</body>
+</html>

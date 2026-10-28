@@ -1,0 +1,4 @@
+interface:
+  display_name: "Sagar Design Job Hunter"
+  short_description: "Portfolio-fit Hyderabad design job batches"
+  default_prompt: "Use $sagar-design-job-hunter to find my next five high-fit Hyderabad design roles."

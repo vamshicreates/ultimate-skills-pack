@@ -1,0 +1,43 @@
+{
+  "source_url": "https://itsutv.news/news/Nmuw7mx615z4iqs32",
+  "copy": {
+    "te": {
+      "category": "రాజకీయాలు",
+      "cover_headline_lines": ["చంద్రబాబు నివాసానికి", "పవన్ కల్యాణ్"],
+      "cover_subhead": "స్థానిక ఎన్నికలపై చర్చించే అవకాశం",
+      "detail_headline_lines": ["ఏ అంశాలపై", "చర్చ?"],
+      "detail_points": [
+        "కూటమి పక్షాల మధ్య సమన్వయం",
+        "స్థానిక ఎన్నికల్లో కలిసి పోటీ",
+        "రాష్ట్ర, జిల్లా, నియోజకవర్గ కమిటీల నియామకం"
+      ],
+      "detail_qualifier": "ఈ అంశాలపై చర్చించనున్నట్లు UTV కథనం పేర్కొంది.",
+      "closing_tag": "పొత్తు వ్యూహం",
+      "closing_headline_lines": ["ఎవరు ఎక్కడ", "పోటీ చేస్తారు?"],
+      "closing_body": "శాతం లెక్కల కంటే, ఏ పార్టీకి ఏ ప్రాంతంలో బలం ఉందో దాని ఆధారంగా పోటీ చేయాలనే ఆలోచనలో నేతలు ఉన్నట్లు కథనం తెలిపింది.",
+      "source_label": "పూర్తి కథనం: itsutv.news",
+      "cta_tag": "రాజకీయ వార్తలు",
+      "cta_headline_lines": ["మరిన్ని రాజకీయ", "వార్తలు కావాలా?"],
+      "cta_body": "స్థానిక ఎన్నికలు, కూటమి తాజా వార్తల కోసం UTV Hott News App చూడండి."
+    },
+    "en": {
+      "category": "POLITICS",
+      "cover_headline_lines": ["Pawan Kalyan visits", "Chandrababu's residence"],
+      "cover_subhead": "Local polls likely on the agenda",
+      "detail_headline_lines": ["What may be", "discussed?"],
+      "detail_points": [
+        "Coordination among alliance partners",
+        "Contesting local polls together",
+        "Appointments to state, district and constituency committees"
+      ],
+      "detail_qualifier": "These topics are expected to be discussed, according to UTV's report.",
+      "closing_tag": "ALLIANCE STRATEGY",
+      "closing_headline_lines": ["Where will each", "ally contest?"],
+      "closing_body": "Party leaders are reportedly considering local contests based on where each alliance partner is strongest, rather than fixed percentage shares.",
+      "source_label": "Full story: itsutv.news",
+      "cta_tag": "POLITICS UPDATES",
+      "cta_headline_lines": ["Want more", "politics updates?"],
+      "cta_body": "Follow local polls and alliance news on UTV Hott News App."
+    }
+  }
+}

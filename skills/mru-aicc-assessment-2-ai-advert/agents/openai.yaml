@@ -1,0 +1,4 @@
+interface:
+  display_name: "Assessment 2 — AI Brand Advert"
+  short_description: "Review AI adverts and create student score reports"
+  default_prompt: "Use $mru-aicc-assessment-2-ai-advert to assess the linked response sheet and create individual feedback PDFs and a new Google Sheets results workbook."

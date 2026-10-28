@@ -1,0 +1,11 @@
+# Music provider and rights checks
+
+Verify current terms for the actual account immediately before generating a commercial release. Save evidence of the plan and creation date with each track. Platform permission for an AI output does not grant rights to third-party lyrics, melody, recordings, or vocal identity supplied as input.
+
+| Route | Current evidence as of 2026-09-28 | Production decision |
+| --- | --- | --- |
+| [Google Flow Music](https://support.google.com/flow/answer/17083868?hl=en) | Core song creation has a no-charge tier. Google's [Google AI Pro benefit](https://support.google.com/googleone/answer/14534406?hl=en) includes Flow Music Plus and explicitly lists commercial-use rights. Its [public pricing table](https://www.flowmusic.app/pricing?plan=monthly) does not state commercial rights for the free tier. | Preferred for this batch because the user has Google AI Pro. Verify the logged-in Flow Music account receives the Plus benefit and record the live terms, region, and credit limits before commercial generation. |
+| [Suno](https://help.suno.com/en/articles/9601601) | Free-plan outputs are personal and noncommercial. [Suno's help](https://help.suno.com/en/articles/2410177) grants commercial-use rights to songs made while subscribed to Pro or Premier; [later subscription is not retroactive](https://help.suno.com/en/articles/2425729). | Use paid-plan generations for commercial work and retain creation records. Do not input lyrics or audio belonging to another rights holder without permission. |
+| [ACE-Step 1.5](https://huggingface.co/ACE-Step/Ace-Step1.5) | The project publishes an open model and says generated music can be used commercially. Its [repository](https://github.com/ace-step/ACE-Step-1.5) supplies the implementation and setup. | Possible no-subscription route if the model, weights, hardware, and quality are validated. Check the exact model revision's license and third-party input rights. This workspace has not yet demonstrated a local generation. |
+
+For every route, distinguish permission to monetize an output from copyright ownership or exclusivity. Do not describe generated music as guaranteed copyright-safe or Content ID safe. If a track will be released through a distributor, check that distributor's current AI music and Content ID rules separately.

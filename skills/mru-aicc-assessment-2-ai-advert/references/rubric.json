@@ -1,0 +1,53 @@
+{
+  "assessment_id": 2,
+  "title": "Assessment 2 — AI Brand Advert",
+  "week": 6,
+  "max_marks": 100,
+  "source_document": "MRU AICC Final Assessment Framework and Rubrics 2026.pdf",
+  "source_sha256": "e0830e3ab56558b4d2ede034864c3c452eda98d9acf7f2e050cb33f3e7d97605",
+  "source_page": 1,
+  "criteria": [
+    {
+      "id": "c1",
+      "label": "Creative concept and originality",
+      "max_marks": 20,
+      "official_description": "A distinctive idea; avoids a generic or copied-feeling execution."
+    },
+    {
+      "id": "c2",
+      "label": "Brand/product communication",
+      "max_marks": 20,
+      "official_description": "The brand/product is identifiable and its key appeal or message is clear."
+    },
+    {
+      "id": "c3",
+      "label": "Storytelling and structure",
+      "max_marks": 15,
+      "official_description": "Coherent progression, suitable pacing, and a clear beginning/development/ending."
+    },
+    {
+      "id": "c4",
+      "label": "Visual quality and consistency",
+      "max_marks": 15,
+      "official_description": "Intentional, appealing visuals; major continuity or generation errors do not distract."
+    },
+    {
+      "id": "c5",
+      "label": "Use and integration of AI",
+      "max_marks": 10,
+      "official_description": "AI-generated elements are used purposefully and integrated into a coherent advert."
+    },
+    {
+      "id": "c6",
+      "label": "Audio, voice and music",
+      "max_marks": 10,
+      "official_description": "Sound supports the advert; voice/dialogue and music are reasonably clear and balanced."
+    },
+    {
+      "id": "c7",
+      "label": "Editing and final delivery",
+      "max_marks": 10,
+      "official_description": "Timing, cuts, titles and ending feel deliberate; video is complete and watchable."
+    }
+  ]
+}

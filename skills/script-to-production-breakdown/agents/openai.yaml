@@ -1,0 +1,4 @@
+interface:
+  display_name: "Script → Production Breakdown"
+  short_description: "Extract scene requirements with script evidence"
+  default_prompt: "Use $script-to-production-breakdown to break down this film's script into scene requirements and continuity dependencies."

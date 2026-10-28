@@ -1,0 +1,4 @@
+interface:
+  display_name: "UPSC Answer Evaluator"
+  short_description: "Handwritten answers to concise, sourced feedback PDFs"
+  default_prompt: "Use $upsc-answer-evaluator to evaluate these answer-sheet images, verify consequential claims, and produce a concise local feedback PDF."

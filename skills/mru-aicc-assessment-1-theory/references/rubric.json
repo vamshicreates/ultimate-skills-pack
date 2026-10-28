@@ -1,0 +1,11 @@
+{
+  "assessment_id": 1,
+  "title": "Assessment 1 — Theory Knowledge",
+  "week": 3,
+  "max_marks": 100,
+  "source_document": "MRU AICC Final Assessment Framework and Rubrics 2026.pdf",
+  "source_sha256": "e0830e3ab56558b4d2ede034864c3c452eda98d9acf7f2e050cb33f3e7d97605",
+  "source_page": 1,
+  "criteria": [],
+  "question_allocation": "Use actual Google Form/questionnaire correct answers and question-level mark settings; not supplied in framework."
+}

@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1530" viewBox="0 0 1200 1530" role="img" aria-labelledby="title desc">
+  <title id="title">UTV Hott News reel script workflow</title>
+  <desc id="desc">UTV article link, verify the article, write a familiar-topic opening, three news hooks, a reaction prompt, an app call to action, and a source-linked 35 to 45 second script.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 12 12" refX="9" refY="6" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+      <path d="M2 2 L10 6 L2 10" fill="none" stroke="#AD2B21" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="7" stdDeviation="12" flood-color="#111111" flood-opacity=".10"/>
+    </filter>
+    <style>
+      text { font-family: Arial, Helvetica, sans-serif; }
+      .eyebrow { font-size: 22px; font-weight: 800; letter-spacing: 3px; }
+      .title { font-size: 62px; font-weight: 900; letter-spacing: -1px; }
+      .stage { font-size: 20px; font-weight: 800; letter-spacing: 2px; }
+      .heading { font-size: 34px; font-weight: 800; fill: #111111; }
+      .detail { font-size: 24px; font-weight: 500; fill: #4B4843; }
+      .hookhead { font-size: 31px; font-weight: 800; fill: #111111; }
+      .hookdetail { font-size: 23px; font-weight: 500; fill: #4B4843; }
+      .time { font-size: 20px; font-weight: 800; fill: #AD2B21; }
+      .wire { stroke: #AD2B21; stroke-width: 6; fill: none; stroke-linecap: round; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect width="1200" height="1530" fill="#F7F3EA"/>
+  <rect width="1200" height="205" fill="#111111"/>
+  <rect x="75" y="37" width="260" height="42" rx="21" fill="#EDB73F"/>
+  <text x="205" y="66" text-anchor="middle" class="eyebrow" fill="#111111">UTV HOTT NEWS</text>
+  <text x="75" y="145" class="title" fill="#FFFFFF">REEL SCRIPT ENGINE</text>
+  <text x="77" y="184" font-size="23" fill="#EDB73F">One article link → a clear, ready-to-record news reel</text>
+
+  <rect x="75" y="240" width="1050" height="115" rx="24" fill="#FFFFFF" filter="url(#shadow)"/>
+  <rect x="75" y="240" width="13" height="115" rx="6" fill="#EDB73F"/>
+  <text x="117" y="278" class="stage" fill="#AD2B21">01  INPUT</text>
+  <text x="117" y="320" class="heading">Paste a UTV Hott News article link</text>
+  <path class="wire" d="M600 360 V392"/>
+
+  <rect x="75" y="405" width="1050" height="125" rx="24" fill="#FFFFFF" filter="url(#shadow)"/>
+  <rect x="75" y="405" width="13" height="125" rx="6" fill="#EDB73F"/>
+  <text x="117" y="443" class="stage" fill="#AD2B21">02  SOURCE CHECK</text>
+  <text x="117" y="484" class="heading">Read the full story and verify the facts</text>
+  <text x="117" y="515" class="detail">Names · place · numbers · claims · what is still uncertain</text>
+  <path class="wire" d="M600 535 V567"/>
+
+  <rect x="75" y="580" width="1050" height="130" rx="24" fill="#EDB73F" filter="url(#shadow)"/>
+  <text x="117" y="618" class="stage" fill="#111111">03  OPENING HOOK  ·  0–4s</text>
+  <text x="117" y="660" class="heading">Start with a familiar topic</text>
+  <text x="117" y="693" class="detail" fill="#29241A">Then land the verified news development.</text>
+  <path class="wire" d="M230 715 V748"/>
+
+  <rect x="75" y="760" width="310" height="230" rx="24" fill="#FFFFFF" filter="url(#shadow)"/>
+  <rect x="75" y="760" width="310" height="12" rx="6" fill="#AD2B21"/>
+  <text x="106" y="807" class="time">4–12s</text>
+  <text x="106" y="853" class="hookhead">HOOK 1</text>
+  <text x="106" y="892" class="hookdetail">First key fact.</text>
+  <text x="106" y="924" class="hookdetail">Answer it clearly.</text>
+  <path class="wire" d="M393 875 H430"/>
+
+  <rect x="445" y="760" width="310" height="230" rx="24" fill="#FFFFFF" filter="url(#shadow)"/>
+  <rect x="445" y="760" width="310" height="12" rx="6" fill="#AD2B21"/>
+  <text x="476" y="807" class="time">12–21s</text>
+  <text x="476" y="853" class="hookhead">HOOK 2</text>
+  <text x="476" y="892" class="hookdetail">Add a distinct</text>
+  <text x="476" y="924" class="hookdetail">reported detail.</text>
+  <path class="wire" d="M763 875 H800"/>
+
+  <rect x="815" y="760" width="310" height="230" rx="24" fill="#FFFFFF" filter="url(#shadow)"/>
+  <rect x="815" y="760" width="310" height="12" rx="6" fill="#AD2B21"/>
+  <text x="846" y="807" class="time">21–31s</text>
+  <text x="846" y="853" class="hookhead">HOOK 3</text>
+  <text x="846" y="892" class="hookdetail">Context, impact,</text>
+  <text x="846" y="924" class="hookdetail">or next step.</text>
+  <path class="wire" d="M970 996 V1028"/>
+
+  <rect x="75" y="1040" width="1050" height="125" rx="24" fill="#FFFFFF" filter="url(#shadow)"/>
+  <rect x="75" y="1040" width="13" height="125" rx="6" fill="#EDB73F"/>
+  <text x="117" y="1078" class="stage" fill="#AD2B21">04  AUDIENCE REACTION  ·  31–38s</text>
+  <text x="117" y="1120" class="heading">Ask one story-specific opinion question</text>
+  <text x="117" y="1152" class="detail">Invite a comment or a share.</text>
+  <path class="wire" d="M600 1170 V1202"/>
+
+  <rect x="75" y="1215" width="1050" height="120" rx="24" fill="#111111" filter="url(#shadow)"/>
+  <text x="117" y="1253" class="stage" fill="#EDB73F">05  APP CTA  ·  38–45s</text>
+  <text x="117" y="1298" font-size="34" font-weight="800" fill="#FFFFFF">Download the UTV Hott News app</text>
+  <text x="117" y="1326" font-size="22" fill="#EDB73F">Stay updated for more.</text>
+  <path class="wire" d="M600 1340 V1372"/>
+
+  <rect x="75" y="1385" width="1050" height="100" rx="24" fill="#AD2B21"/>
+  <text x="117" y="1427" class="stage" fill="#FFFFFF">OUTPUT</text>
+  <text x="117" y="1464" font-size="32" font-weight="800" fill="#FFFFFF">35–45s script + source link</text>
+  <text x="1125" y="1514" text-anchor="end" font-size="18" fill="#6B6258">UTV Hott News · Reel Script Workflow</text>
+</svg>

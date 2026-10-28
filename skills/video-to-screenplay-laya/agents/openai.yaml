@@ -1,0 +1,4 @@
+interface:
+  display_name: "Video to Screenplay_Laya"
+  short_description: "Test Laya transcript triage for film screenplays"
+  default_prompt: "Use $video-to-screenplay-laya to test Laya-assisted transcript triage for this film and produce a dialogue screenplay."

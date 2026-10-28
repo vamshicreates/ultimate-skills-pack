@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Review Maya GLB exports against dimensions and reference images." />
+    <title>Maya 3D Review</title>
+  </head>
+  <body>
+    <main class="app-shell">
+      <aside class="sidebar">
+        <header>
+          <p class="eyebrow">Maya 3D skill</p>
+          <h1>Model review</h1>
+          <p>Inspect semantic parts, physical scale, silhouettes, and attachment details before delivery.</p>
+        </header>
+
+        <section>
+          <h2>Load model</h2>
+          <label class="file-button" for="model-file">Choose GLB</label>
+          <input id="model-file" type="file" accept=".glb,model/gltf-binary" />
+          <div class="url-row">
+            <input id="model-url" type="url" placeholder="https://…/model.glb" aria-label="Model URL" />
+            <button id="load-url" type="button">Load</button>
+          </div>
+          <p id="status" class="status">Drop a GLB anywhere in the viewport.</p>
+        </section>
+
+        <section>
+          <h2>Generate blockout</h2>
+          <div class="button-row">
+            <label class="file-button" for="scene-spec-file">Scene specification</label>
+            <button id="export-blockout" class="secondary" type="button" disabled>Export blockout GLB</button>
+          </div>
+          <input id="scene-spec-file" type="file" accept=".json,application/json" />
+          <p class="status">Load <code>scene_spec.json</code> to create the structural Three.js model before Maya production.</p>
+        </section>
+
+        <section>
+          <h2>Reference and dimensions</h2>
+          <div class="button-row">
+            <label class="file-button secondary" for="reference-file">Reference image</label>
+            <label class="file-button secondary" for="dimension-file">Dimension spec</label>
+          </div>
+          <input id="reference-file" type="file" accept="image/*" />
+          <input id="dimension-file" type="file" accept=".json,application/json" />
+          <label class="range-label" for="reference-opacity">
+            Reference opacity <output id="opacity-value">40%</output>
+          </label>
+          <input id="reference-opacity" type="range" min="0" max="100" value="40" />
+        </section>
+
+        <section>
+          <h2>Measured result</h2>
+          <dl id="metrics" class="metrics">
+            <div><dt>Width X</dt><dd>—</dd></div>
+            <div><dt>Height Y</dt><dd>—</dd></div>
+            <div><dt>Depth Z</dt><dd>—</dd></div>
+          </dl>
+          <div id="dimension-results" class="results muted">Load a dimension specification to compare expected and actual size.</div>
+        </section>
+
+        <section>
+          <div class="section-heading">
+            <h2>Structural validation</h2>
+            <span id="validation-count" class="badge">0</span>
+          </div>
+          <div id="validation-results" class="validation muted">Load a scene specification and generate or load a model.</div>
+        </section>
+
+        <section class="parts-section">
+          <div class="section-heading">
+            <h2>Scene parts</h2>
+            <span id="part-count" class="badge">0</span>
+          </div>
+          <div id="parts" class="parts muted">No model loaded.</div>
+        </section>
+      </aside>
+
+      <section id="viewport" class="viewport" aria-label="Interactive 3D model viewport">
+        <img id="reference-overlay" alt="Reference overlay" hidden />
+        <div class="toolbar" role="toolbar" aria-label="Viewer controls">
+          <button id="fit-view" type="button">Fit</button>
+          <button id="toggle-wireframe" type="button" aria-pressed="false">Wireframe</button>
+          <button id="toggle-edges" type="button" aria-pressed="false">Edges</button>
+          <button id="toggle-grid" type="button" aria-pressed="true">Grid</button>
+          <button id="toggle-rotate" type="button" aria-pressed="false">Auto rotate</button>
+        </div>
+        <div id="selection" class="selection">Nothing selected</div>
+        <div id="drop-hint" class="drop-hint">Drop GLB to review</div>
+      </section>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

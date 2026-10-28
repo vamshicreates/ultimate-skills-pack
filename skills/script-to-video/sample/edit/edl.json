@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "title": "Script to Video Sample",
+  "sources": {
+    "S001-SH001": "$HOME/Documents/VamshiCreates/Skills/script-to-video/sample/edit/render_sources/S001-SH001.mp4"
+  },
+  "ranges": [
+    {
+      "source": "S001-SH001",
+      "start": 0,
+      "end": 3.2,
+      "beat": "S001-SH001",
+      "reason": "Static color card for pipeline test"
+    }
+  ],
+  "grade": "",
+  "overlays": [],
+  "subtitles": "$HOME/Documents/VamshiCreates/Skills/script-to-video/sample/edit/master.srt",
+  "total_duration_s": 3.2
+}

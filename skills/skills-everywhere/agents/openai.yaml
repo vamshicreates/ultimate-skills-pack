@@ -1,0 +1,4 @@
+interface:
+  display_name: "Skills Everywhere"
+  short_description: "Share local skills across your coding agents"
+  default_prompt: "Use $skills-everywhere to inspect and share my installed skills across my coding agents."

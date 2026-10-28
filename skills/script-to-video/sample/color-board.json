@@ -1,0 +1,18 @@
+{
+  "style": "color",
+  "boards": [
+    {
+      "board_id": "S001-B001",
+      "scene_id": "S001",
+      "image": "shots/S001-SH001.png",
+      "panels": [
+        {
+          "shot_id": "S001-SH001",
+          "camera": "Static card",
+          "caption": "Narrator introduces scene",
+          "source": "S001-D001"
+        }
+      ]
+    }
+  ]
+}

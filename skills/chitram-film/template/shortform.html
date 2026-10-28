@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Short-form Edit</title>
+<link rel="stylesheet" href="engine/fonts.css" />
+<link rel="stylesheet" href="engine/kit.css" />
+<link rel="stylesheet" href="engine/shortform.css" />
+<script src="engine/vendor/gsap.min.js"></script>
+<style>
+/* ============ TOKENS (fill from the edit plan's VISUAL SYSTEM, SHORTFORM.md §5) ============ */
+:root{
+  --brand:#5B4FDB;  --brand-lift:#7E72F0;  --accent:#E3B34A;  --paper:#F7F1EC;  --ink:#111216;
+  --cap:#FFFFFF;    --cap-top:1290px;      /* caption band: chest height, out of the face and the UI zones */
+}
+#film{background:#000;font-family:"Inter",sans-serif}
+.full{position:absolute;left:0;top:0;width:{{W}}px;height:{{H}}px}
+#footCam{transform-origin:50% 32%}             /* punch-ins zoom toward the face, not the frame centre */
+/* graphic world (optional): brand colour + 1 px grid + grain + soft top lift */
+#wbg{background:radial-gradient(75% 38% at 50% 0%,var(--brand-lift),transparent 72%),var(--brand)}
+#wgrid{background-image:repeating-linear-gradient(90deg,rgba(247,241,236,.14) 0 2px,transparent 2px 108px),
+  repeating-linear-gradient(0deg,rgba(247,241,236,.14) 0 2px,transparent 2px 108px)}
+.cutw{transform-origin:50% 100%}
+</style>
+</head>
+<body>
+<div id="film" data-film data-duration="{{DURATION}}" data-fps="{{FPS}}" data-width="{{W}}" data-height="{{H}}" data-audio="assets/final_audio.wav">
+
+  <!-- ===== FOOTAGE WORLD: the cut master, untouched, film time = master time ===== -->
+  <div id="footWrap" class="layer">
+    <div id="footCam" class="layer">
+      <img class="full" data-seq="assets/clip/%05d.jpg" data-first="0" data-count="{{FRAMES}}" data-seq-fps="{{FPS}}" data-at="0" alt="">
+      <!-- the face box from faces.json (summary.box_px), so no text ever lands on it -->
+      <div data-clear="face" style="position:absolute;left:{{FACE_X}}px;top:{{FACE_Y}}px;width:{{FACE_W}}px;height:{{FACE_H}}px"></div>
+    </div>
+    <!-- per-beat overlays on footage: <div id="s1" class="layer" data-in=".." data-out="..">sticker labels</div> -->
+  </div>
+
+  <!-- ===== GRAPHIC WORLD (only if the plan uses one) ===== -->
+  <div id="worldWrap" class="layer" style="opacity:0">
+    <div id="wbg" class="layer"></div>
+    <div id="wgrid" class="layer"></div>
+    <!-- beats: <div id="s2" class="layer" data-in=".." data-out=".."> type + cut-out <img data-seq="assets/cut/%05d.webp"> </div> -->
+  </div>
+
+  <div id="caps" class="layer"></div>
+  <div id="fx" class="layer"></div>
+</div>
+
+<script src="engine/runtime.js"></script>
+<script src="engine/motion-kit.js"></script>
+<script src="engine/shortform-kit.js"></script>
+<script src="assets/words.js"></script>
+<script src="assets/cuts.js"></script>
+<script>
+Film.build((tl) => {
+  const D = Film.cfg.duration, W = WORDS.words;
+
+  // ---- jump cuts: every visible join gets a punch (1.00 <-> 1.08), unless a graphic beat covers it ----
+  SF.punches(tl, "#footCam", CUTS, { scales: [1, 1.08] });
+
+  // ---- captions: every spoken word, synced; skip the windows where a beat shows its own text ----
+  SF.captions(tl, W, { style: "clean", maxWords: 3, emphasis: [], skip: [] });
+
+  // ---- BEAT n | t0–t1 | name ----  (SF.at(W, "word") gives the time a word is spoken)
+
+  // ---- END: hold ≥ 1.5 s after the last word ----
+});
+</script>
+</body>
+</html>

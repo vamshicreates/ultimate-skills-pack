@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Storyboard Your Feature Film — Cost Planner | My Logline</title>
+<meta name="description" content="See exactly how many credits and how much money it takes to storyboard every scene of your feature film, including retries and screenplay formatting.">
+<meta name="theme-color" content="#0F0F0F">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#0F0F0F;--card:#1A1A1A;--card2:#1F1F1F;--card3:#242424;--line:#383838;--line2:#292929;--text:#FAFAFA;--head:#F2F2F2;--muted:#999;--dim:#666;--red:#CE2827;--red-h:#E23534;--red-soft:rgba(206,40,39,.14);--yellow:#D6CA29;--ok:#8fd8a4}
+*{box-sizing:border-box;margin:0}html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font:400 16px/1.6 Figtree,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3,.display{font-family:"Plus Jakarta Sans",Figtree,sans-serif;color:var(--head);font-weight:800;letter-spacing:-.035em;line-height:1.05}
+a{color:inherit;text-decoration:none}
+.wrap{width:min(1120px,calc(100% - 32px));margin:auto}
+:focus-visible{outline:3px solid var(--yellow);outline-offset:3px}
+/* nav */
+nav{position:sticky;top:0;z-index:20;background:rgba(15,15,15,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--line2)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{font-family:"Plus Jakarta Sans";font-weight:800;font-size:1.15rem;letter-spacing:-.03em;display:flex;align-items:center;gap:9px}
+.logo i{width:10px;height:10px;border-radius:50%;background:var(--red);box-shadow:0 0 14px var(--red)}
+.navlinks{display:flex;gap:26px;color:var(--muted);font-size:.93rem;font-weight:500}.navlinks a:hover{color:var(--text)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--red);color:var(--text);font:600 .95rem Figtree;border:0;border-radius:99px;padding:12px 24px;cursor:pointer;transition:.15s}
+.btn:hover{background:var(--red-h);transform:translateY(-1px)}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--text)}.btn.ghost:hover{background:var(--card3)}
+/* hero */
+.hero{padding:84px 0 56px;text-align:center;position:relative;overflow:hidden}
+.hero:before{content:"";position:absolute;inset:-200px 0 auto;height:560px;background:radial-gradient(ellipse at 50% 0,rgba(206,40,39,.22),transparent 65%);pointer-events:none}
+.eyebrow{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--line);background:var(--card);border-radius:99px;padding:6px 14px;font-size:.82rem;color:var(--muted);font-weight:500}
+.eyebrow b{color:var(--yellow);font-weight:600}
+h1{font-size:clamp(2.5rem,7vw,5.2rem);margin:24px auto 22px;max-width:15ch;position:relative}
+h1 em{font-style:normal;color:var(--red)}
+.lead{color:var(--muted);font-size:1.15rem;max-width:56ch;margin:0 auto 32px;position:relative}
+.cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative}
+.strip{display:flex;gap:14px;justify-content:center;margin:60px auto 0;position:relative;max-width:900px}
+.frame{flex:1;aspect-ratio:16/10;background:var(--card);border:1px solid var(--line2);border-radius:12px;padding:10px;display:flex;flex-direction:column;justify-content:space-between;text-align:left;transition:.25s}
+.frame:nth-child(odd){transform:translateY(10px)}.frame:hover{border-color:var(--red);transform:translateY(-4px)}
+.frame .shot{flex:1;border-radius:6px;background:linear-gradient(135deg,#262626,#171717);position:relative;overflow:hidden}
+.frame .shot:after{content:"";position:absolute;left:18%;bottom:0;width:30%;height:62%;background:#333;border-radius:40% 40% 0 0}
+.frame:nth-child(2) .shot:after{left:50%;height:45%;background:#3a2020}.frame:nth-child(3) .shot:after{left:30%;width:44%;height:35%}.frame:nth-child(4) .shot:after{left:60%;height:70%;background:#3a3420}
+.frame small{font-size:.7rem;color:var(--muted);margin-top:8px;font-weight:600;letter-spacing:.05em}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line2);border:1px solid var(--line2);border-radius:20px;overflow:hidden;margin-top:56px}
+.stats div{background:var(--card);padding:24px;text-align:left}.stats strong{display:block;font:800 2rem "Plus Jakarta Sans";letter-spacing:-.04em;color:var(--head)}.stats span{color:var(--muted);font-size:.88rem}
+/* sections */
+section{padding:84px 0}
+.kicker{color:var(--red);font-weight:700;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase}
+h2{font-size:clamp(2rem,4.5vw,3.2rem);margin:12px 0 14px;max-width:18ch}
+.sub{color:var(--muted);max-width:58ch}
+/* calculator */
+.calc{display:grid;grid-template-columns:1.1fr .9fr;gap:18px;margin-top:44px;align-items:start}
+.panel{background:var(--card);border:1px solid var(--line2);border-radius:24px;padding:28px}
+.sec{padding-bottom:24px;margin-bottom:24px;border-bottom:1px solid var(--line2)}.sec:last-child{border:0;margin:0;padding:0}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.lbl{font-weight:600}.big{font:800 1.9rem "Plus Jakarta Sans";letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.hint{font-size:.85rem;color:var(--muted);margin-top:8px}
+input[type=range]{width:100%;accent-color:var(--red);margin:18px 0 6px;cursor:pointer}
+.marks{display:flex;justify-content:space-between;color:var(--dim);font-size:.75rem}
+.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.opt{position:relative}.opt input{position:absolute;opacity:0}
+.opt label{display:block;text-align:center;padding:14px 8px;background:var(--card2);border:1px solid var(--line2);border-radius:14px;cursor:pointer;height:100%;transition:.15s}
+.opt strong{display:block;font-size:1.05rem}.opt span{font-size:.78rem;color:var(--muted)}
+.opt input:checked+label{border-color:var(--red);background:var(--red-soft)}
+.opt input:focus-visible+label{outline:3px solid var(--yellow);outline-offset:2px}
+.check{display:flex;gap:12px;cursor:pointer;align-items:flex-start}.check input{accent-color:var(--red);width:19px;height:19px;margin-top:3px}
+.words{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--card2);border-radius:14px;padding:12px 14px;margin-top:14px}
+.words input{width:120px;background:var(--bg);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:9px 11px;font:inherit;text-align:right}
+.toggle{display:flex;background:var(--bg);border-radius:99px;padding:4px;gap:4px;margin-top:14px}
+.toggle button{flex:1;border:0;background:transparent;color:var(--muted);font:600 .9rem Figtree;padding:10px;border-radius:99px;cursor:pointer}
+.toggle button[aria-pressed=true]{background:var(--card3);color:var(--text)}
+.results{position:sticky;top:84px;background:linear-gradient(170deg,#211515,var(--card) 45%)}
+.price{font:800 clamp(3rem,6vw,4.4rem) "Plus Jakarta Sans";letter-spacing:-.06em;line-height:1;margin:8px 0;color:var(--head);font-variant-numeric:tabular-nums}
+.pill{font-size:.75rem;font-weight:700;color:#14110a;background:var(--yellow);border-radius:99px;padding:4px 11px}
+.muted{color:var(--muted);font-size:.88rem}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:22px 0}
+.metric{background:var(--card2);border:1px solid var(--line2);border-radius:14px;padding:14px}.metric small{display:block;color:var(--muted);font-size:.8rem}.metric strong{font:800 1.4rem "Plus Jakarta Sans";letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.line{display:flex;justify-content:space-between;gap:14px;padding:7px 0;color:#c4c4c4;font-size:.92rem}.line strong{color:var(--text);font-variant-numeric:tabular-nums}
+.line.total{border-top:1px solid var(--line);margin-top:6px;padding-top:12px;font-weight:600}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.plan{border:1px solid var(--line2);background:var(--card2);border-radius:16px;padding:14px}.plan.best{border-color:var(--red);background:var(--red-soft)}
+.plan h3{font:700 .95rem Figtree;letter-spacing:0}.plan .c{font:800 1.35rem "Plus Jakarta Sans";margin:6px 0 2px;letter-spacing:-.03em}.plan p{font-size:.78rem;color:var(--muted)}
+.results .btn{width:100%;margin-top:18px}
+.fine{font-size:.78rem;color:var(--dim);margin-top:14px}
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:44px}
+.step{background:var(--card);border:1px solid var(--line2);border-radius:22px;padding:28px;transition:.2s}.step:hover{border-color:var(--line)}
+.num{font:800 3rem "Plus Jakarta Sans";color:var(--red);letter-spacing:-.05em;line-height:1}
+.step h3{font-size:1.3rem;margin:14px 0 8px;letter-spacing:-.02em}.step p{color:var(--muted);font-size:.95rem}
+code{background:var(--card3);border-radius:6px;padding:2px 7px;font-size:.85em;color:var(--yellow)}
+/* pricing table */
+.plans{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:44px;max-width:860px}
+.pc{background:var(--card);border:1px solid var(--line2);border-radius:24px;padding:30px;position:relative}.pc.rec{border-color:var(--red)}
+.pc .badge{position:absolute;top:-12px;left:28px;background:var(--red);font-size:.75rem;font-weight:700;padding:4px 12px;border-radius:99px}
+.pc h3{font-size:1.5rem}.pc .p{font:800 2.6rem "Plus Jakarta Sans";letter-spacing:-.05em;margin:10px 0 2px;color:var(--head)}
+.pc ul{list-style:none;padding:0;margin-top:18px;display:grid;gap:9px;color:#c4c4c4;font-size:.93rem}.pc li:before{content:"✓";color:var(--red);font-weight:800;margin-right:10px}
+/* faq */
+details{border-bottom:1px solid var(--line2);padding:20px 0}summary{cursor:pointer;font:700 1.1rem "Plus Jakarta Sans";color:var(--head);list-style:none;display:flex;justify-content:space-between}summary:after{content:"+";color:var(--red);font-size:1.4rem;line-height:1}details[open] summary:after{content:"–"}
+details p{color:var(--muted);margin-top:10px;max-width:70ch}
+.faq{margin-top:36px;max-width:820px}
+.final{text-align:center;background:linear-gradient(180deg,var(--card),#1f1212);border:1px solid var(--line2);border-radius:32px;padding:72px 24px}.final h2{margin:0 auto 16px}.final .sub{margin:0 auto 28px}
+footer{border-top:1px solid var(--line2);padding:36px 0;color:var(--dim);font-size:.85rem}footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+@media(max-width:860px){.navlinks{display:none}.calc{grid-template-columns:1fr}.results{position:static}.steps,.plans{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.strip .frame:nth-child(n+4){display:none}section{padding:60px 0}.hero{padding-top:56px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<nav><div class="wrap">
+  <a class="logo" href="#"><i></i>My Logline</a>
+  <div class="navlinks"><a href="#planner">Planner</a><a href="#how">How it works</a><a href="#plans">Plans</a><a href="#faq">FAQ</a></div>
+  <a class="btn" href="https://www.mylogline.com/">Start writing</a>
+</div></nav>
+
+<header class="hero"><div class="wrap">
+  <span class="eyebrow"><b>New</b> Storyboard cost planner</span>
+  <h1>Storyboard your whole film. <em>Know the cost first.</em></h1>
+  <p class="lead">Tell us your scene count and how many image attempts you want per scene. We'll show the credits, top-ups and total spend before you generate a single frame.</p>
+  <div class="cta"><a class="btn" href="#planner">Try the planner</a><a class="btn ghost" href="#how">See how it's calculated</a></div>
+  <div class="strip" aria-hidden="true">
+    <div class="frame"><div class="shot"></div><small>SC 01 · EXT. HARBOUR</small></div>
+    <div class="frame"><div class="shot"></div><small>SC 02 · INT. WAREHOUSE</small></div>
+    <div class="frame"><div class="shot"></div><small>SC 03 · EXT. ROOFTOP</small></div>
+    <div class="frame"><div class="shot"></div><small>SC 04 · INT. COURTROOM</small></div>
+  </div>
+  <div class="stats">
+    <div><strong>170 min</strong><span>Example feature length</span></div>
+    <div><strong>80</strong><span>Scenes in the default demo</span></div>
+    <div><strong>15</strong><span>Credits per storyboard image</span></div>
+    <div><strong>₹0</strong><span>Hidden fees in the estimate*</span></div>
+  </div>
+</div></header>
+
+<section id="planner"><div class="wrap">
+  <span class="kicker">Cost planner</span>
+  <h2>Move the sliders. Watch the price.</h2>
+  <p class="sub">Everything updates instantly. Nothing is sent to a server.</p>
+  <div class="calc">
+    <div class="panel">
+      <div class="sec">
+        <div class="row"><label class="lbl" for="scenes">Scenes in your film</label><div class="big" id="sceneOut">80</div></div>
+        <input type="range" id="scenes" min="10" max="180" value="80" step="1">
+        <div class="marks"><span>10</span><span>Typical: 70–120</span><span>180</span></div>
+      </div>
+      <div class="sec">
+        <div class="lbl" id="attLbl">Image attempts per scene</div>
+        <div class="opts" role="radiogroup" aria-labelledby="attLbl">
+          <div class="opt"><input type="radio" name="att" id="a1" value="1"><label for="a1"><strong>1</strong><span>Straight shot</span></label></div>
+          <div class="opt"><input type="radio" name="att" id="a2" value="2" checked><label for="a2"><strong>2</strong><span>One alternative</span></label></div>
+          <div class="opt"><input type="radio" name="att" id="a3" value="3"><label for="a3"><strong>3</strong><span>Explore options</span></label></div>
+        </div>
+        <p class="hint">Total attempts per scene, not extra retries. This is not the plan's max shots per scene.</p>
+      </div>
+      <div class="sec">
+        <label class="check"><input type="checkbox" id="fmt" checked><span><span class="lbl">Include screenplay formatting</span><br><span class="muted">One pass, 1 credit per 250 words.</span></span></label>
+        <div class="words"><label for="words" class="muted">Screenplay word count</label><input type="number" id="words" value="34000" min="1000" max="100000" step="500"></div>
+      </div>
+      <div class="sec">
+        <div class="lbl">Pricing view</div>
+        <div class="toggle" role="group" aria-label="Billing view"><button id="bFirst" aria-pressed="true">First month</button><button id="bRenew" aria-pressed="false">Renewal</button></div>
+      </div>
+    </div>
+
+    <aside class="panel results" aria-live="polite">
+      <div class="row"><span class="muted">Cheapest way to cover it</span><span class="pill" id="bestPill">Base + top-ups</span></div>
+      <div class="price" id="total">₹0</div>
+      <p class="muted" id="totalNote"></p>
+      <div class="metrics">
+        <div class="metric"><small>Total credits</small><strong id="mCredits">0</strong></div>
+        <div class="metric"><small>Top-ups needed</small><strong id="mTop">0</strong></div>
+        <div class="metric"><small>Storyboard images</small><strong id="mImgs">0</strong></div>
+        <div class="metric"><small>Credits left over</small><strong id="mLeft">0</strong></div>
+      </div>
+      <div>
+        <div class="line"><span>Storyboard credits</span><strong id="lSb"></strong></div>
+        <div class="line"><span>Formatter credits</span><strong id="lFm"></strong></div>
+        <div class="line"><span>Plan credits included</span><strong id="lPl"></strong></div>
+        <div class="line total"><span>Estimated spend</span><strong id="lTot"></strong></div>
+      </div>
+      <div class="cmp" id="cmp"></div>
+      <button class="btn" id="copy">Copy estimate</button>
+      <p class="fine">*Excludes taxes, payment fees and future price changes.</p>
+    </aside>
+  </div>
+</div></section>
+
+<section id="how" style="background:#131313"><div class="wrap">
+  <span class="kicker">The logic</span>
+  <h2>Simple maths, nothing hidden.</h2>
+  <p class="sub">Every number in the planner comes from three lines.</p>
+  <div class="steps">
+    <div class="step"><div class="num">01</div><h3>Count the frames</h3><p><code>scenes × attempts</code> gives your images. Each one costs 15 credits.</p></div>
+    <div class="step"><div class="num">02</div><h3>Add formatting</h3><p>Optional. <code>ceil(words ÷ 250)</code>, so a 34,000-word script is 136 credits.</p></div>
+    <div class="step"><div class="num">03</div><h3>Cover with a plan</h3><p>Plan credits go first. Any shortfall is topped up in 500-credit packs, which never expire.</p></div>
+  </div>
+</div></section>
+
+<section id="plans"><div class="wrap">
+  <span class="kicker">Plans</span>
+  <h2>Pick Base or Pro. We'll compare both.</h2>
+  <div class="plans">
+    <div class="pc"><h3>Base</h3><div class="p" id="pcBase">₹499</div><p class="muted" id="pcBaseN">first month, then ₹599/month</p>
+      <ul><li>500 plan credits</li><li>5 projects, 5 scripts</li><li>50 drafts per scene</li><li>20 storyboard shots per scene</li></ul></div>
+    <div class="pc rec"><span class="badge">Recommended for big films</span><h3>Pro</h3><div class="p" id="pcPro">₹899</div><p class="muted" id="pcProN">first month, then ₹999/month</p>
+      <ul><li>1,000 plan credits</li><li>100 projects, 100 scripts</li><li>200 drafts per scene</li><li>50 storyboard shots per scene</li></ul></div>
+  </div>
+  <p class="fine" style="margin-top:18px">Credit top-up: ₹1,500 for 500 credits. Pricing is from supplied screenshots and should be validated before launch.</p>
+</div></section>
+
+<section id="faq" style="background:#131313"><div class="wrap">
+  <span class="kicker">Good to know</span>
+  <h2>Assumptions, plainly.</h2>
+  <div class="faq">
+    <details><summary>Where do 34,000 words and 80 scenes come from?</summary><p>They're planning estimates for a 170-minute feature at roughly one page per minute. Real scripts vary with dialogue density, pacing and scene length, so adjust the sliders to match yours.</p></details>
+    <details><summary>Is Pro always cheaper?</summary><p>No. The planner compares total spend, subscription plus top-ups, for both plans and recommends whichever is lower for your inputs.</p></details>
+    <details><summary>Does formatting cost more if I rewrite sections?</summary><p>Yes. The estimate assumes one pass through the screenplay. Repeated text requests or failed calls use extra credits.</p></details>
+    <details><summary>Are my inputs saved?</summary><p>No. The planner runs entirely in your browser and sends nothing anywhere.</p></details>
+  </div>
+</div></section>
+
+<section><div class="wrap"><div class="final">
+  <h2>Ready to see your film?</h2>
+  <p class="sub">Write the script. Storyboard every scene. Know the bill up front.</p>
+  <a class="btn" href="https://www.mylogline.com/">Start writing</a>
+</div></div></section>
+
+<footer><div class="wrap"><span>© My Logline · Demo estimator, not a checkout</span><span>Script writing software for film-makers.</span></div></footer>
+
+<script>
+/* ---- All prices editable here ---- */
+const CONFIG={imageCredits:15,wordsPerCredit:250,topUp:{credits:500,price:1500},
+  plans:{base:{name:'Base',credits:500,first:499,renew:599},pro:{name:'Pro',credits:1000,first:899,renew:999}}};
+/* ---- Pure business logic ---- */
+function estimate({scenes,attempts,formatting,words,billing},c=CONFIG){
+  const images=scenes*attempts, sb=images*c.imageCredits;
+  const fm=formatting?Math.ceil(words/c.wordsPerCredit):0, total=sb+fm;
+  const opt=k=>{const p=c.plans[k],top=Math.ceil(Math.max(0,total-p.credits)/c.topUp.credits);
+    const price=p[billing]+top*c.topUp.price,avail=p.credits+top*c.topUp.credits;
+    return{key:k,name:p.name,top,price,credits:p.credits,left:avail-total}};
+  const b=opt('base'),p=opt('pro');
+  return{images,sb,fm,total,base:b,pro:p,best:p.price<b.price?p:b,tie:p.price===b.price};
+}
+/* ---- UI ---- */
+const $=id=>document.getElementById(id),fmt=n=>new Intl.NumberFormat('en-IN').format(n),inr=n=>'₹'+fmt(n);
+let billing='first',last;
+function state(){return{scenes:+$('scenes').value,attempts:+document.querySelector('input[name=att]:checked').value,formatting:$('fmt').checked,words:Math.max(0,+$('words').value||0),billing}}
+function render(){
+  const s=state(),r=last=estimate(s),b=r.best;
+  $('sceneOut').textContent=s.scenes;$('words').disabled=!s.formatting;
+  $('total').textContent=inr(b.price);
+  $('bestPill').textContent=r.tie?'Prices tie':b.name+' + top-ups';
+  $('totalNote').textContent=(billing==='first'?'First-month promo pricing':'Renewal pricing')+' · '+b.top+' top-up'+(b.top===1?'':'s');
+  $('mCredits').textContent=fmt(r.total);$('mTop').textContent=b.top;$('mImgs').textContent=fmt(r.images);$('mLeft').textContent=fmt(b.left);
+  $('lSb').textContent=fmt(r.sb)+' cr';$('lFm').textContent=fmt(r.fm)+' cr';$('lPl').textContent=fmt(b.credits)+' cr';$('lTot').textContent=inr(b.price);
+  $('cmp').innerHTML=[r.base,r.pro].map(o=>`<div class="plan${!r.tie&&o===b?' best':''}"><h3>${o.name}${!r.tie&&o===b?' · best':''}</h3><div class="c">${inr(o.price)}</div><p>${o.top} top-up${o.top===1?'':'s'} · ${fmt(o.left)} cr left</p></div>`).join('');
+  const P=CONFIG.plans,f=billing==='first';
+  $('pcBase').textContent=inr(f?P.base.first:P.base.renew);$('pcPro').textContent=inr(f?P.pro.first:P.pro.renew);
+  $('pcBaseN').textContent=f?`first month, then ${inr(P.base.renew)}/month`:'per month (renewal)';
+  $('pcProN').textContent=f?`first month, then ${inr(P.pro.renew)}/month`:'per month (renewal)';
+}
+document.querySelectorAll('input').forEach(i=>i.addEventListener('input',render));
+[['bFirst','first'],['bRenew','renew']].forEach(([id,v])=>$(id).addEventListener('click',()=>{billing=v;$('bFirst').setAttribute('aria-pressed',v==='first');$('bRenew').setAttribute('aria-pressed',v==='renew');render()}));
+$('copy').addEventListener('click',async()=>{const s=state(),r=last,b=r.best;
+  const t=`Storyboard estimate: ${s.scenes} scenes × ${s.attempts} attempts = ${r.images} images (${r.sb} cr)${s.formatting?`, formatting ${r.fm} cr`:''}. Total ${r.total} credits. ${b.name} + ${b.top} top-up(s) = ${inr(b.price)} (${billing==='first'?'first month':'renewal'}), ${b.left} credits left. Excludes taxes and fees.`;
+  try{await navigator.clipboard.writeText(t);$('copy').textContent='Copied ✓'}catch(e){$('copy').textContent='Copy failed'}
+  setTimeout(()=>$('copy').textContent='Copy estimate',1800)});
+render();
+</script>
+</body>
+</html>

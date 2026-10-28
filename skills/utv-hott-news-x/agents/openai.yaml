@@ -1,0 +1,7 @@
+interface:
+  display_name: "UTV Hott News X Publisher"
+  short_description: "Turn news links into posts and publish on X"
+  icon_small: "./assets/logo.png"
+  icon_large: "./assets/logo.png"
+  brand_color: "#EDB73F"
+  default_prompt: "Use $utv-hott-news-x to turn this article link into an X post or thread and publish it through my browser."
