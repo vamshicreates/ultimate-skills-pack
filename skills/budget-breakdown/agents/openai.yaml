@@ -1,0 +1,4 @@
+interface:
+  display_name: "Budget Breakdown"
+  short_description: "Script-based budgets in PDF and editable Excel"
+  default_prompt: "Use $budget-breakdown with my complete bound script and optional pitch deck to prepare a sourced production budget, indoor/outdoor breakdown and location access plan in PDF and editable Excel."

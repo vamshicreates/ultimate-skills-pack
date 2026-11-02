@@ -1,0 +1,24 @@
+{
+  "timezone": "Asia/Kolkata",
+  "scenes": ["A.room", "A.exit"],
+  "minimum_break_minutes_per_day": 60,
+  "days": [{
+    "id": "D01",
+    "call_start": 900,
+    "call_end": 1620,
+    "calls": [
+      {"character": "Performer A", "call": 990, "ready": 1080, "release": 1590},
+      {"character": "Performer B", "call": 990, "ready": 1080, "release": 1590}
+    ],
+    "events": [
+      {"start": 900, "end": 1080, "kind": "Setup", "description": "Prelight / HMU / blocking"},
+      {"start": 1080, "end": 1125, "kind": "Break", "description": "Meal"},
+      {"start": 1125, "end": 1260, "kind": "Shoot", "scene_refs": ["A.room"], "cast": ["Performer A", "Performer B"]},
+      {"start": 1260, "end": 1275, "kind": "Break", "description": "Comfort break"},
+      {"start": 1275, "end": 1320, "kind": "Setup", "description": "Relight / move"},
+      {"start": 1320, "end": 1560, "kind": "Shoot", "scene_refs": ["A.exit"], "cast": ["Performer A", "Performer B"]},
+      {"start": 1560, "end": 1590, "kind": "Buffer", "description": "Pickup reserve; assign actors/scenes if used"},
+      {"start": 1590, "end": 1620, "kind": "Wrap", "description": "Media verification and strike"}
+    ]
+  }]
+}

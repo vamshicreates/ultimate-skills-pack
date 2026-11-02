@@ -1,0 +1,12 @@
+{
+  "currency": "INR",
+  "as_of": "2026-11-02",
+  "contingency_rate": 0.1,
+  "lines": [
+    {"id": "CREW01", "category": "Technicians", "item": "Fictional technician", "quantity": 2, "units": 3, "rate": 100, "status": "included", "basis": "Fictional example, not a market rate"},
+    {"id": "KIT01", "category": "Equipment", "item": "Fictional kit", "quantity": 1, "units": 3, "rate": 50, "status": "included", "basis": "Fictional kit-days"},
+    {"id": "WAIVE01", "category": "Art", "item": "Confirmed waived prop", "quantity": 1, "units": 1, "rate": 0, "status": "included", "basis": "Known zero, not unknown"},
+    {"id": "LOC01", "category": "Locations", "item": "Venue rent", "quantity": null, "units": null, "rate": null, "status": "tbd", "basis": "Access days are separate from rental quote"}
+  ],
+  "expected": {"direct": 750, "contingency": 75, "total": 825, "categories": {"Technicians": 600, "Equipment": 150, "Art": 0}}
+}

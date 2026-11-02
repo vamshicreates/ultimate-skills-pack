@@ -1,0 +1,4 @@
+interface:
+  display_name: "Schedule Planner"
+  short_description: "Daily shoot plans with cast calls and timed setups"
+  default_prompt: "Use $schedule-planner with my complete bound script and optional pitch deck to create a consolidated shoot schedule with daily scenes, character calls, setup timelines, breaks and wrap times in PDF and editable Excel."

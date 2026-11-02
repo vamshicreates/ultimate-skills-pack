@@ -1,11 +1,11 @@
 # ⚡ Ultimate Skills Pack for Coding Agents
 
-[![Skills Count](https://img.shields.io/badge/skills-975%2B-blueviolet?style=for-the-badge&logo=sparkles)](SKILLS_DIRECTORY.md)
+[![Skills Count](https://img.shields.io/badge/skills-977%2B-blueviolet?style=for-the-badge&logo=sparkles)](SKILLS_DIRECTORY.md)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-0078D4?style=for-the-badge&logo=windows)](install.py)
 [![Agents](https://img.shields.io/badge/agents-Claude%20%7C%20Antigravity%20%7C%20Codex%20%7C%20Cursor%20%7C%20Windsurf%20%7C%20Roo-brightgreen?style=for-the-badge)](skills-manifest.json)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 
-> **The definitive, production-grade library of 975+ Agent Skills bundled into a single repository.**  
+> **The definitive, production-grade library of 977+ Agent Skills bundled into a single repository.**
 > Built for **Windows**, **macOS**, and **Linux**, with 1-click cross-platform installers for **Claude Code**, **Google Antigravity / Gemini CLI**, **OpenCode / OpenAI Codex**, **Cursor**, **Windsurf**, and **Roo/Cline**.
 
 ---
@@ -15,7 +15,7 @@
 Modern AI coding agents (Claude Code, Cursor, Antigravity, OpenCode, Windsurf) are only as capable as the instructions and domain workflows provided to them. Until now, skills have been fragmented across disparate directories, agent-specific formats, broken symlinks, and Unix-only paths that fail on Windows.
 
 **Ultimate Skills Pack** solves this once and for all:
-- **975+ Curated Skills**: Deduplicated, normalized, and categorized across 13 domains.
+- **977+ Curated Skills**: Deduplicated, normalized, and categorized across 13 domains.
 - **100% Cross-Platform**: Native support for **Windows (NTFS)**, **macOS**, and **Linux**. Zero forbidden characters (no `:` colons in folder names), normalized line endings, and sanitized paths.
 - **Multi-Agent Bridge**: Symlink or copy skills directly into any agent’s discovery directory with a single command.
 - **Automatic Fallback on Windows**: When Windows Developer Mode / symlink privileges are not enabled, the installer seamlessly falls back to directory copies without errors.
@@ -82,12 +82,12 @@ python3 install.py --agent cursor --local
 
 ---
 
-## 🗂️ Category Overview (975 Skills)
+## 🗂️ Category Overview (977 Skills)
 
 Explore the full catalogue with clickable links in [**SKILLS_DIRECTORY.md**](SKILLS_DIRECTORY.md).
 
 ```
-Ultimate Skills Pack (975 Skills)
+Ultimate Skills Pack (977 Skills)
 ├── 🎬 Video & Motion Graphics (192 skills)     -> Remotion, Hyperframes, 20 Motion Styles, DaVinci, Premiere
 ├── 🛠️ Productivity & Tools (123 skills)       -> Defuddle, MinERU, JSON Canvas, Knap, Obsidian, PDF, Automation
 ├── 💻 Coding & Architecture (114 skills)       -> Systematic Debugging, Clean Code, Refactoring UI, TDD, DDIA
@@ -100,7 +100,7 @@ Ultimate Skills Pack (975 Skills)
 ├── 🏢 Business & Operations (43 skills)        -> MVP Scope, Pricing Strategy, Pitch Deck, First Customers, Job Hunter
 ├── ☁️ Cloud & DevOps (43 skills)              -> Cloudflare Workers, Durable Objects, Vercel Deploy, Firebase
 ├── 🎵 Audio & Music (23 skills)               -> Whisper Transcriber, Sound Effects, Voicebox, Lyric Video Producer
-└── 🎥 Filmmaking & Story (15 skills)           -> Film to Screenplay, Script Doctor, Screenplay Storyboards
+└── 🎥 Filmmaking & Story (17 skills)           -> Film to Screenplay, Script Doctor, Screenplay Storyboards
 ```
 
 ---

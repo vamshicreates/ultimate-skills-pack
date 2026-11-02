@@ -1,11 +1,11 @@
 {
   "name": "ultimate-skills-pack",
   "title": "Ultimate Skills Pack for Coding Agents",
-  "description": "The comprehensive, production-grade library of 975+ skills for Claude Code, Antigravity, OpenCode/Codex, Cursor, Windsurf, Roo/Cline, and LLM coding agents across Windows, macOS, and Linux.",
+  "description": "The comprehensive, production-grade library of 977+ skills for Claude Code, Antigravity, OpenCode/Codex, Cursor, Windsurf, Roo/Cline, and LLM coding agents across Windows, macOS, and Linux.",
   "version": "1.0.0",
   "author": "Vamshi Creates (https://github.com/vamshicreates)",
   "license": "MIT",
-  "total_skills": 975,
+  "total_skills": 977,
   "categories": {
     "ai-and-agents": 74,
     "audio-and-music": 23,
@@ -13,7 +13,7 @@
     "cloud-and-devops": 43,
     "coding-and-architecture": 114,
     "creator-and-social": 44,
-    "filmmaking-and-story": 15,
+    "filmmaking-and-story": 17,
     "marketing-and-growth": 91,
     "productivity-and-tools": 123,
     "science-and-bio": 46,
@@ -2731,6 +2731,31 @@
       "has_scripts": false,
       "has_references": false,
       "has_resources": false,
+      "compatibility": [
+        "claude-code",
+        "gemini-antigravity",
+        "codex-opencode",
+        "cursor",
+        "windsurf",
+        "cline-roo",
+        "github-copilot",
+        "universal"
+      ],
+      "platforms": [
+        "windows",
+        "macos",
+        "linux"
+      ]
+    },
+    {
+      "name": "budget-breakdown",
+      "category": "filmmaking-and-story",
+      "description": "Build a production budget from a mandatory complete bound script, with an optional pitch deck. Estimate cast, technicians, equipment, time, logistics and post-production; separate indoor/outdoor scenes and location access days; deliver a readable PDF and an editable Excel workbook with one tab per cost category.",
+      "path": "skills/budget-breakdown",
+      "files_count": 5,
+      "has_scripts": true,
+      "has_references": true,
+      "has_resources": true,
       "compatibility": [
         "claude-code",
         "gemini-antigravity",
@@ -18956,6 +18981,31 @@
       "has_scripts": false,
       "has_references": false,
       "has_resources": false,
+      "compatibility": [
+        "claude-code",
+        "gemini-antigravity",
+        "codex-opencode",
+        "cursor",
+        "windsurf",
+        "cline-roo",
+        "github-copilot",
+        "universal"
+      ],
+      "platforms": [
+        "windows",
+        "macos",
+        "linux"
+      ]
+    },
+    {
+      "name": "schedule-planner",
+      "category": "filmmaking-and-story",
+      "description": "Plan a film or series shoot from a mandatory complete bound script and optional pitch deck. Produce scene-based daily character calls, realistic setup and shooting blocks, breaks, wrap and rest planning in a PDF and editable Excel schedule. Use for production shoot scheduling, not post-production editing schedules or generic calendars.",
+      "path": "skills/schedule-planner",
+      "files_count": 5,
+      "has_scripts": true,
+      "has_references": true,
+      "has_resources": true,
       "compatibility": [
         "claude-code",
         "gemini-antigravity",

@@ -1,6 +1,6 @@
 # Ultimate Skills Pack — Master Directory
 
-> **975+ Production-Grade Agent Skills** cross-platform compatible with **Windows**, **macOS**, and **Linux**, supporting **Claude Code**, **Google Antigravity / Gemini CLI**, **OpenCode / OpenAI Codex**, **Cursor**, **Windsurf**, and **Roo/Cline**.
+> **977+ Production-Grade Agent Skills** cross-platform compatible with **Windows**, **macOS**, and **Linux**, supporting **Claude Code**, **Google Antigravity / Gemini CLI**, **OpenCode / OpenAI Codex**, **Cursor**, **Windsurf**, and **Roo/Cline**.
 
 ## Categories Overview
 
@@ -10,7 +10,7 @@
 - [Cloud And Devops (#cloud-and-devops)](#cloud-and-devops) — **43 skills**
 - [Coding And Architecture (#coding-and-architecture)](#coding-and-architecture) — **114 skills**
 - [Creator And Social (#creator-and-social)](#creator-and-social) — **44 skills**
-- [Filmmaking And Story (#filmmaking-and-story)](#filmmaking-and-story) — **15 skills**
+- [Filmmaking And Story (#filmmaking-and-story)](#filmmaking-and-story) — **17 skills**
 - [Marketing And Growth (#marketing-and-growth)](#marketing-and-growth) — **91 skills**
 - [Productivity And Tools (#productivity-and-tools)](#productivity-and-tools) — **123 skills**
 - [Science And Bio (#science-and-bio)](#science-and-bio) — **46 skills**
@@ -410,10 +410,11 @@
 ---
 
 ## Filmmaking And Story
-*15 skills in this category.*
+*17 skills in this category.*
 
 | Skill Name | Description | Scripts | References | Files |
 | :--- | :--- | :---: | :---: | :---: |
+| [budget-breakdown](skills/budget-breakdown/SKILL.md) | Create a sourced production budget from a complete bound script and optional deck, with category Excel tabs and a PDF. | ✅ | ✅ | 5 |
 | [can-one-sentence-become-a-film](skills/can-one-sentence-become-a-film/SKILL.md) | Write a short My Logline social video script for the “Can one sentence become a film?” series when the user names a f... | — | — | 2 |
 | [chitram-film](skills/chitram-film/SKILL.md) | Motion studio, editor, sound designer and music-video maker as a skill. Understands any input (idea, vibe, timecoded ... | — | ✅ | 280 |
 | [directors-take](skills/directors-take/SKILL.md) | Write a short My Logline “Director's Take” reel about the bold creative choice behind a named film. Use when the user... | — | ✅ | 4 |
@@ -422,6 +423,7 @@
 | [film-costume-continuity](skills/film-costume-continuity/SKILL.md) | Design character look boards, scene-specific costumes, coordinated colour palettes, and visual costume continuity for... | ✅ | ✅ | 7 |
 | [film-to-screenplay](skills/film-to-screenplay/SKILL.md) | Convert any movie title or .srt file into a complete Hollywood-format Screenplay PDF (12pt Courier) with Romanized or... | ✅ | — | 6 |
 | [indian-film-crew-options](skills/indian-film-crew-options/SKILL.md) | Read the user's live Indian film technician Google Sheet and propose two costed crew options for a film budget or bri... | — | — | 4 |
+| [schedule-planner](skills/schedule-planner/SKILL.md) | Create daily scene/cast calls, timed setups, breaks, wrap and recovery plans from a complete bound script, in PDF and Excel. | ✅ | ✅ | 5 |
 | [screenplay-storyboards](skills/screenplay-storyboards/SKILL.md) | Turn a screenplay into a scene-by-scene shot list and 16:9 storyboard sheets (monochrome by default, color when reque... | ✅ | ✅ | 6 |
 | [script-doctor](skills/script-doctor/SKILL.md) | Review and script-doctor micro-dramas, two-minute stories, short films, features, web-series pilots and episodes, and... | ✅ | ✅ | 18 |
 | [script-production-breakdown](skills/script-production-breakdown/SKILL.md) | Read a complete locked screenplay, inventory every scene, create production-ready scene breakdowns, and generate a ni... | ✅ | ✅ | 16 |
